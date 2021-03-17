@@ -11,4 +11,6 @@ app.use(bodyParser.json());
 // routes
 app.use('/api/user', require('./Routes/Users'));
 
+app.use('/api/post', require('./Routes/Posts'));
+
 app.listen(5000, () => console.log('server started'));
