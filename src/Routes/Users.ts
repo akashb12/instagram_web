@@ -18,4 +18,7 @@ router.post("/updateProfilePicture", auth, userController.updateProfilePicture);
 // update user details
 router.post("/updateUserDetails", auth, userController.updateUserDetails);
 
+// search user
+router.post("/searchUser", auth, userController.searchUser);
+
 module.exports = router;

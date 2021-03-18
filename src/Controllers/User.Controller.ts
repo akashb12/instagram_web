@@ -3,6 +3,7 @@ const User = require("../DataBase/Models/User");
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import multer from "multer";
+import { raw } from "objection";
 const fs = require("fs");
 const config = require("../Config/key");
 const saltRounds: number = 10;
@@ -153,10 +154,10 @@ module.exports.updateProfilePicture = async function (
 ) {
   upload(req, res, (err: any) => {
     if (err) {
-      console.log(err)
+      console.log(err);
       return res.json({ status: false, err });
     }
-    return res.json({ status: true, image: req.file.path });
+    return res.json({ status: true, image: req.file.filename });
   });
 };
 
@@ -177,6 +178,17 @@ module.exports.updateUserDetails = async function (req: any, res: Response) {
         message: "user updated",
       });
     }
+  } catch (error) {
+    return res.status(400).json({ status: false, error });
+  }
+};
+
+// search user
+module.exports.searchUser = async function (req: any, res: Response) {
+  const { name } = req.body;
+  try {
+    const users = await User.query().where("username", "like", `%${name}%`);
+    return res.status(200).json({ status: true, users });
   } catch (error) {
     return res.status(400).json({ status: false, error });
   }

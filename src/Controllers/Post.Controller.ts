@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-const User = require("../DataBase/Models/User");
+//const User = require("../DataBase/Models/User");
 const Post = require("../DataBase/Models/Post");
+const SavedPosts = require("../DataBase/Models/SavedPosts");
 import multer from "multer";
 const fs = require("fs");
-const config = require("../Config/key");
 
 // multer configuration
 const storage = multer.diskStorage({
@@ -38,13 +38,167 @@ const upload = multer({ storage: storage, fileFilter: fileFilter }).array(
   "file"
 );
 
-// register user
+// post images
+module.exports.addPostImages = async function (req: Request, res: Response) {
+  upload(req, res, (err: any) => {
+    if (err) {
+      console.log(err);
+      return res.json({ status: false, err });
+    }
+    return res.json({ status: true, image: req.files });
+  });
+};
+
+// add post
+
 module.exports.addPost = async function (req: Request, res: Response) {
-    upload(req, res, (err: any) => {
-        if (err) {
-          console.log(err)
-          return res.json({ status: false, err });
-        }
-        return res.json({ status: true, image: req.files });
+  const {
+    caption,
+    attachment_url,
+    tagged_users,
+    commentsEnabled,
+    archive,
+    userId,
+  } = req.body;
+  try {
+    const insertData = await Post.query().insert({
+      caption: caption,
+      attachment_url: attachment_url,
+      tagged_users: tagged_users,
+      commentsEnabled: commentsEnabled,
+      archive: archive,
+      userId: userId,
+    });
+    return res.status(200).send({
+      status: true,
+      message: "post added",
+      insertData,
+    });
+  } catch (error) {
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
+};
+// edit post
+module.exports.editPost = async function (req: Request, res: Response) {
+  const { caption, tagged_users } = req.body;
+
+  try {
+    const post = await Post.query().findById(req.params.id);
+    const editPost = await Post.query()
+      .findById(req.params.id)
+      .patch({
+        caption: caption ? caption : post.caption,
+        tagged_users: tagged_users ? tagged_users : post.tagged_users,
       });
+    return res.status(200).send({
+      status: true,
+      message: "post updated",
+      editPost,
+    });
+  } catch (error) {
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
+};
+
+// save post
+module.exports.savePost = async function (req: Request, res: Response) {
+  try {
+    const insertData = await SavedPosts.query().insert({
+      postId: req.params.postId,
+      userId: req.params.userId,
+    });
+    return res.status(200).send({
+      status: true,
+      message: "post saved",
+      insertData,
+    });
+  } catch (error) {
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
+};
+
+// get my posts
+module.exports.getMyPosts = async function (req: Request, res: Response) {
+  try {
+    const posts = await Post.query()
+      .select("*")
+      .where("userId", "=", req.params.id)
+      .andWhere("archive", "=", false);
+    return res.status(200).send({
+      status: true,
+      posts,
+    });
+  } catch (error) {
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
+};
+
+// get saved posts
+module.exports.getSavedPosts = async function (req: Request, res: Response) {
+  try {
+    const allPosts = await SavedPosts.query()
+      .select("*")
+      .where("userId", "=", req.params.id)
+      .withGraphFetched("posts");
+    return res.status(200).send({
+      status: true,
+      allPosts,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
+};
+
+// enable/disable comments
+module.exports.toggleComments = async function (req: Request, res: Response) {
+  try {
+    const post = await Post.query().findById(req.params.id);
+    const toggleComments = await Post.query().findById(req.params.id).patch({
+      commentsEnabled: !post.commentsEnabled,
+    });
+    return res.status(200).send({
+      status: true,
+      toggleComments,
+    });
+  } catch (error) {
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
+};
+
+// archive
+module.exports.archive = async function (req: Request, res: Response) {
+  try {
+    const post = await Post.query().findById(req.params.id);
+    const archive = await Post.query().findById(req.params.id).patch({
+      archive: !post.archive,
+    });
+    return res.status(200).send({
+      status: true,
+      archive,
+    });
+  } catch (error) {
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
 };

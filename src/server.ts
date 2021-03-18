@@ -7,10 +7,12 @@ setupDb();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
+app.use('./uploads', express.static('uploads'));
 // routes
 app.use('/api/user', require('./Routes/Users'));
 
 app.use('/api/post', require('./Routes/Posts'));
+
+app.use('/api/like', require('./Routes/Likes'));
 
 app.listen(5000, () => console.log('server started'));
