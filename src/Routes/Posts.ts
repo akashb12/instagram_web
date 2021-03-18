@@ -1,8 +1,7 @@
-import express from 'express';
+import express from "express";
 const router = express.Router();
-const postController = require("../Controllers/Post.Controller")
-import auth from '../MiddleWare/Auth'
-
+const postController = require("../Controllers/Post.Controller");
+import auth from "../MiddleWare/Auth";
 
 // add post images
 router.post("/addPostImages", auth, postController.addPostImages);
@@ -10,12 +9,14 @@ router.post("/addPostImages", auth, postController.addPostImages);
 // add post
 router.post("/addPost", auth, postController.addPost);
 
-
 // edit post
 router.post("/editPost/:id", auth, postController.editPost);
 
 // save posts
-router.post("/savePost/:userId/:postId", auth, postController.savePost);
+router.post("/savePost/:id", auth, postController.savePost);
+
+// unsave posts
+router.post("/unsavePost/:id", auth, postController.unSavePost);
 
 // get my posts
 router.post("/getMyPosts/:id", auth, postController.getMyPosts);
@@ -31,5 +32,8 @@ router.post("/toggleComments/:id", auth, postController.toggleComments);
 
 //archive
 router.post("/archive/:id", auth, postController.archive);
+
+// delete post
+router.post("/deletePost/:id", auth, postController.deletePost);
 
 module.exports = router;

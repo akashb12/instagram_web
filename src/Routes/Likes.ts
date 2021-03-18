@@ -1,10 +1,17 @@
 import express from 'express';
 const router = express.Router();
-const likeController = require("../Controllers/Like.Controller")
+const likeController = require("../Controllers/Likes.Controller")
 import auth from '../MiddleWare/Auth'
 
 
 // add like
-router.post("/addLike/:userId/:postId", auth, likeController.addLike);
+router.post("/addLike/:id", auth, likeController.addLike);
+
+
+// remove like
+router.post("/removeLike/:id", auth, likeController.removeLike);
+
+// get likes
+router.post("/getLikes/:id", auth, likeController.getLikes);
 
 module.exports = router;

@@ -1,8 +1,8 @@
 import { Model } from "objection";
 
-class Like extends Model {
+class Comment extends Model {
   static get tableName() {
-    return "likes";
+    return "comments";
   }
   static get relationMappings() {
     const User = require("./User");
@@ -11,11 +11,11 @@ class Like extends Model {
         relation: Model.HasOneRelation,
         modelClass: User,
         join: {
-          from: "likes.userId",
+          from: "comments.userId",
           to: "user.id",
         },
       },
     };
   }
 }
-module.exports = Like;
+module.exports = Comment;

@@ -15,4 +15,8 @@ app.use('/api/post', require('./Routes/Posts'));
 
 app.use('/api/like', require('./Routes/Likes'));
 
+app.use('/api/comment', require('./Routes/Comments'));
+
+app.use('/api/reply', require('./Routes/Replies'));
+
 app.listen(5000, () => console.log('server started'));

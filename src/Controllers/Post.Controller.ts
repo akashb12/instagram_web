@@ -107,16 +107,33 @@ module.exports.editPost = async function (req: Request, res: Response) {
 };
 
 // save post
-module.exports.savePost = async function (req: Request, res: Response) {
+module.exports.savePost = async function (req: any, res: Response) {
   try {
     const insertData = await SavedPosts.query().insert({
-      postId: req.params.postId,
-      userId: req.params.userId,
+      postId: req.params.id,
+      userId: req.user.id,
     });
     return res.status(200).send({
       status: true,
       message: "post saved",
       insertData,
+    });
+  } catch (error) {
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
+};
+
+// unsave
+module.exports.unSavePost = async function (req: any, res: Response) {
+  try {
+    const removeData = await SavedPosts.query().deleteById(req.params.id)
+    return res.status(200).send({
+      status: true,
+      message: "post unsaved",
+      removeData,
     });
   } catch (error) {
     return res.status(400).send({
@@ -196,6 +213,33 @@ module.exports.archive = async function (req: Request, res: Response) {
       archive,
     });
   } catch (error) {
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
+};
+
+// delete post
+module.exports.deletePost = async function (req: any, res: Response) {
+  try {
+    const post = await Post.query().findById(req.params.id);
+    if(post.userId === req.user.id){
+      const removeData = await Post.relatedQuery('saved_posts')
+      .for(2)
+      .delete()
+      return res.status(200).send({
+        status: true,
+      });
+    }
+    else{
+      return res.status(400).send({
+        status: false,
+      });
+    }
+
+  } catch (error) {
+    console.log(error)
     return res.status(400).send({
       status: false,
       error,
