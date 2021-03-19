@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 const Comment = require("../DataBase/Models/Comment");
 const Post = require("../DataBase/Models/Post");
-// add likes
+// add comment
 module.exports.addComment = async function (req: any, res: Response) {
   try {
     const insertData = await Comment.query().insert({
@@ -14,6 +14,36 @@ module.exports.addComment = async function (req: any, res: Response) {
       message: "comment added",
       insertData,
     });
+  } catch (error) {
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
+};
+
+// edit comment
+module.exports.editComment = async function (req: any, res: Response) {
+  const { comment } = req.body;
+
+  try {
+    const comments = await Comment.query().findById(req.params.id);
+    if (comments.userId === req.user.id) {
+      const editComment = await Comment.query()
+        .findById(req.params.id)
+        .patch({
+          comment: comments ? comment : comments.comment,
+        });
+      return res.status(200).send({
+        status: true,
+        message: "comment updated",
+        editComment,
+      });
+    } else {
+      return res.status(400).send({
+        status: false,
+      });
+    }
   } catch (error) {
     return res.status(400).send({
       status: false,
