@@ -129,7 +129,7 @@ module.exports.savePost = async function (req: any, res: Response) {
 // unsave
 module.exports.unSavePost = async function (req: any, res: Response) {
   try {
-    const removeData = await SavedPosts.query().deleteById(req.params.id)
+    const removeData = await SavedPosts.query().deleteById(req.params.id);
     return res.status(200).send({
       status: true,
       message: "post unsaved",
@@ -224,22 +224,18 @@ module.exports.archive = async function (req: Request, res: Response) {
 module.exports.deletePost = async function (req: any, res: Response) {
   try {
     const post = await Post.query().findById(req.params.id);
-    if(post.userId === req.user.id){
-      const removeData = await Post.relatedQuery('saved_posts')
-      .for(2)
-      .delete()
+    if (post.userId === req.user.id) {
+      const removeData = await Post.query().deleteById(req.params.id);
       return res.status(200).send({
         status: true,
       });
-    }
-    else{
+    } else {
       return res.status(400).send({
         status: false,
       });
     }
-
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(400).send({
       status: false,
       error,

@@ -11,6 +11,8 @@ app.use('./uploads', express.static('uploads'));
 // routes
 app.use('/api/user', require('./Routes/Users'));
 
+app.use('/api/follow', require('./Routes/Followers'));
+
 app.use('/api/post', require('./Routes/Posts'));
 
 app.use('/api/like', require('./Routes/Likes'));

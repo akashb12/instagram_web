@@ -21,4 +21,10 @@ router.post("/updateUserDetails", auth, userController.updateUserDetails);
 // search user
 router.post("/searchUser", auth, userController.searchUser);
 
+
+// get profile
+router.post("/getProfile/:myId/:targetId", auth, userController.getProfile);
+
+// search user
+router.post("/deleteUser", auth, userController.deleteUser);
 module.exports = router;

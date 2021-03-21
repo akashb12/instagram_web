@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 const User = require("../DataBase/Models/User");
+const Follower = require("../DataBase/Models/Follower");
+const Following = require("../DataBase/Models/Following");
+const Post = require("../DataBase/Models/Post");
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import multer from "multer";
-import { raw } from "objection";
 const fs = require("fs");
 const config = require("../Config/key");
 const saltRounds: number = 10;
@@ -43,7 +45,7 @@ const upload = multer({ storage: storage, fileFilter: fileFilter }).single(
 
 // register user
 module.exports.register = async function (req: Request, res: Response) {
-  const { fullName, email, password, dob, userName, phone } = req.body;
+  const { fullName, email, password, dob, userName, isPrivate } = req.body;
   const users = await User.query().findOne({ email: email });
   if (users) {
     return res.status(200).json({
@@ -61,18 +63,17 @@ module.exports.register = async function (req: Request, res: Response) {
           password: hash,
           dob: dob,
           username: userName,
-          phone: phone,
+          isPrivate: isPrivate,
         });
         return res.status(200).send({
           status: true,
           message: "user added",
-          insertData,
         });
       }
     } catch (error) {
       return res.status(400).send({
         status: false,
-        error: error,
+        error: error.name,
       });
     }
   }
@@ -95,6 +96,7 @@ module.exports.login = async function (req: Request, res: Response) {
         return res.status(200).json({
           status: true,
           message: "login Successful",
+          token,
         });
       } else {
         return res.status(400).json({
@@ -163,7 +165,7 @@ module.exports.updateProfilePicture = async function (
 
 // // update profile
 module.exports.updateUserDetails = async function (req: any, res: Response) {
-  const { fullName, bio, image } = req.body;
+  const { fullName, bio, image, isPrivate } = req.body;
   try {
     const updateUserDetails = await User.query()
       .findById(req.user.id)
@@ -171,6 +173,7 @@ module.exports.updateUserDetails = async function (req: any, res: Response) {
         full_name: fullName ? fullName : req.user.full_name,
         profileImage: image ? image : req.user.profileImage,
         bio: bio ? bio : req.user.bio,
+        isPrivate: isPrivate ? isPrivate : req.user.isPrivate,
       });
     if (updateUserDetails) {
       return res.status(200).json({
@@ -191,5 +194,97 @@ module.exports.searchUser = async function (req: any, res: Response) {
     return res.status(200).json({ status: true, users });
   } catch (error) {
     return res.status(400).json({ status: false, error });
+  }
+};
+
+// get profile
+module.exports.getProfile = async function (req: any, res: Response) {
+  try {
+    const user = await User.query().findById(req.params.targetId);
+
+    const getProfileDetails = await Follower.query()
+      .select("*")
+      .where("user_id", "=", req.params.targetId)
+      .andWhere("follower_id", "=", req.params.myId);
+
+    const followers = await Follower.query()
+      .select("*")
+      .where("user_id", "=", req.params.targetId);
+
+    const following = await Following.query()
+      .select("*")
+      .where("user_id", "=", req.params.targetId);
+
+    const posts = await Post.query()
+      .select("*")
+      .where("userId", "=", req.params.targetId)
+      .andWhere("archive", "=", false);
+
+    if (user.isPrivate === true) {
+      if (getProfileDetails.length) {
+        return res.status(200).send({
+          status: true,
+          followers: followers.length,
+          following: following.length,
+          posts: posts,
+          message: "following",
+        });
+      } else {
+        return res.status(200).send({
+          status: false,
+          followers: followers.length,
+          following: following.length,
+          message: "not following",
+        });
+      }
+    } else {
+      if (getProfileDetails.length) {
+        return res.status(200).send({
+          status: true,
+          followers: followers.length,
+          following: following.length,
+          posts: posts,
+          message: "following",
+        });
+      } else {
+        return res.status(200).send({
+          status: false,
+          followers: followers.length,
+          following: following.length,
+          posts: posts,
+          message: "not following",
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
+};
+
+// DELETE USER
+module.exports.deleteUser = async function (req: any, res: Response) {
+  try {
+    const user = await User.query().findById(req.user.id);
+    if (user) {
+      const removeData = await User.query().deleteById(req.user.id);
+      return res.status(200).send({
+        status: true,
+        removeData,
+      });
+    } else {
+      return res.status(400).send({
+        status: false,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      status: false,
+      error,
+    });
   }
 };

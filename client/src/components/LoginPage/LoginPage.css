@@ -1,0 +1,104 @@
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+.login-page .container {
+  width: 350px;
+}
+.text {
+  color: #fff;
+  letter-spacing: 1px;
+  margin: 10px;
+}
+.page {
+  border: 1px solid black;
+  padding-bottom: 15px;
+  height: 60vh;
+}
+.register-page {
+  border: 1px solid black;
+  padding-bottom: 15px;
+  height: 70vh;
+}
+
+.title {
+  padding: 30px;
+  text-transform: capitalize;
+  font-size: 2.5rem;
+  font-family: "Pacifico", cursive;
+}
+.login-form {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 30px;
+}
+.login-form input {
+  margin-bottom: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  border-radius: 3px;
+  outline: none;
+}
+.login-form input:focus {
+  border: 1px solid rgba(0, 0, 0, 0.7);
+  background: #efefef;
+}
+.login-form input[type="email"],
+[type="date"],
+input[type="text"],
+input[type="password"] {
+  padding-left: 10px;
+  position: relative;
+  height: 35px;
+  font-size: 17px;
+}
+.login-form input::placeholder {
+  font-weight: normal;
+  font-size: 13px;
+  transition: 0.3s ease;
+}
+.login-form input:focus::placeholder {
+  position: absolute;
+  font-size: 10px;
+  transform: translate(-5px);
+}
+.login-form .login-errors-none {
+  display: none;
+}
+.login-form .login-errors {
+  color: red;
+  margin: 5px;
+  font-size: 10px;
+}
+.login-form button {
+  border: none;
+  background: #043fff;
+  padding: 5px 0;
+  margin-top: 5px;
+  color: #fff;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+.login-form button:active {
+  background: #2c58fe;
+  transform: scale(0.995);
+}
+.page .signup {
+  border: 1px solid #b6b6b6;
+  border-radius: 2px;
+  margin: 30px 16px;
+  position: relative;
+}
+.page .signup p {
+  margin: 10px;
+}
+.page .signup a {
+  text-decoration: none;
+  margin-left: 5px;
+  color: #008aff;
+  font-weight: bold;
+}
