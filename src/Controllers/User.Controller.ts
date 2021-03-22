@@ -43,6 +43,19 @@ const upload = multer({ storage: storage, fileFilter: fileFilter }).single(
   "file"
 );
 
+
+// auth
+module.exports.auth =async function (req:any,res:Response){
+  res.status(200).json({
+    status:true,
+    id: req.user.id,
+    full_name:req.user.full_name,
+    username:req.user.username,
+    isPrivate:req.user.isPrivate,
+    email:req.user.email
+});
+}
+
 // register user
 module.exports.register = async function (req: Request, res: Response) {
   const { fullName, email, password, dob, userName, isPrivate } = req.body;

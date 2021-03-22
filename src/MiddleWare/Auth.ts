@@ -14,12 +14,12 @@ async function auth(req: any, res: any, next: any) {
       next();
     } else {
       return res.json({
-        isAuth: false,
+        status: false,
       });
     }
   } catch (error) {
     return res.json({
-      isAuth: false,
+      status: false,
       error: error,
     });
   }

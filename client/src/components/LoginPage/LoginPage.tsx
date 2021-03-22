@@ -27,7 +27,6 @@ const LoginPage: React.FC = () => {
 
     const state = useSelector((state: RootStore) => state.mainReducer.login);
     if (state?.status) {
-        console.log('data', state.token)
         window.sessionStorage.setItem('token', state.token || '')
     }
 

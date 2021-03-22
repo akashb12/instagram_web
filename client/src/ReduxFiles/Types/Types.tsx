@@ -1,5 +1,6 @@
 export const REGISTER = 'register';
 export const LOGIN = 'login';
+export const AUTH = 'auth';
 
 export interface RegisterUser {
     type: typeof REGISTER
@@ -11,4 +12,9 @@ export interface RegisterUser {
     payload: LoginType
   }
 
-  export type DispatchTypes = RegisterUser | LoginUser
+  export interface AuthUser {
+    type: typeof AUTH
+    payload: AuthType
+  }
+
+  export type DispatchTypes = RegisterUser | LoginUser| AuthUser

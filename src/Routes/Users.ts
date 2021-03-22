@@ -3,6 +3,9 @@ const router = express.Router();
 const userController = require("../Controllers/User.Controller")
 import auth from '../MiddleWare/Auth'
 
+// auth
+router.post("/auth", auth, userController.auth);
+
 // register user
 router.post("/register", userController.register)
 

@@ -65,10 +65,10 @@ input[type="password"] {
   font-size: 10px;
   transform: translate(-5px);
 }
-.login-form .login-errors-none {
+.login-errors-none {
   display: none;
 }
-.login-form .login-errors {
+.login-errors {
   color: red;
   margin: 5px;
   font-size: 10px;

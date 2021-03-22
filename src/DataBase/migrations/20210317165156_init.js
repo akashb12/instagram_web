@@ -1,7 +1,7 @@
 exports.up = function(knex) {
     return knex.schema.createTable('posts',(table) => {
         table.increments();
-        table.string('caption').notNullable();
+        table.text('caption').notNullable();
         table.specificType('attachment_url', 'text ARRAY').notNullable();
         table.specificType('tagged_users', 'text ARRAY');
         table.boolean('commentsEnabled').defaultTo(true);

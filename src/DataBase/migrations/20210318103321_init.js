@@ -1,7 +1,7 @@
 exports.up = function(knex) {
     return knex.schema.createTable('comments',(table) => {
         table.increments();
-        table.string('comment').notNullable();
+        table.text('comment').notNullable();
         table.integer('userId').unsigned() // Add a foreign key (FK)...
         .references('user.id') // ...which references Article PK.
         .onUpdate('CASCADE') // If Article PK is changed, update FK as well.

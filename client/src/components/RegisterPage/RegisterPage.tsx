@@ -21,7 +21,6 @@ const RegisterPage: React.FC = () => {
     const { register, handleSubmit, errors } = useForm({
         resolver: yupResolver(schema),
     });
-
     const [Error, setError] = useState(false);
     const [Value, setValue] = useState<RegisterValues>({
         email: "",
@@ -32,12 +31,6 @@ const RegisterPage: React.FC = () => {
     });
 
     const state = useSelector((state: RootStore) => state.mainReducer.register);
-    if (state?.status) {
-        window.location.replace('/login')
-    }
-    else{
-        setError(true)
-    }
     // onchange
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setValue({
@@ -47,10 +40,13 @@ const RegisterPage: React.FC = () => {
 
     // submit
     const submitForm = (): void => {
-        console.log(Value)
-        // validation check
-
         dispatch(Register(Value));
+        if (state?.status) {
+            window.location.replace('/login')
+        }
+        else{
+            setError(true)
+        }
     }
     return (
         <div className="login-page">
@@ -75,6 +71,7 @@ const RegisterPage: React.FC = () => {
                         <span className={errors.password ? "login-errors" : "login-errors-none"}>*invalid password</span>
                         <button type="submit">Sign up</button>
                     </form>
+                    <span className={Error ? "login-errors" : "login-errors-none"}>*account already exist</span>
                     <div className="signup">
                         <p>Have an account?<Link to='/login'>Log in</Link></p>
                     </div>

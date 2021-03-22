@@ -4,6 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import LoginPage from './components/LoginPage/LoginPage';
 import RegisterPage from './components/RegisterPage/RegisterPage';
+import Auth from './auth/Auth';
+import HomePage from './components/HomePage/HomePage';
 
 const App:React.FC =()=> {
   return (
@@ -14,8 +16,9 @@ const App:React.FC =()=> {
 					  </div>}>
         <Router>
         <Switch>
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/register" component={RegisterPage} />
+        <Route exact path="/" component={Auth(HomePage,true)} />
+        <Route exact path="/login" component={Auth(LoginPage,false)} />
+        <Route exact path="/register" component={Auth(RegisterPage,false)} />
         </Switch>
         </Router>
     </Suspense>
