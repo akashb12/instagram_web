@@ -15,6 +15,7 @@ async function auth(req: any, res: any, next: any) {
     } else {
       return res.json({
         status: false,
+        message:'user invalid'
       });
     }
   } catch (error) {

@@ -17,14 +17,14 @@ const storage = multer.diskStorage({
     file: Express.Multer.File,
     callback: (error: Error | null, destination: string) => void
   ) {
-    callback(null, "./uploads");
+    callback(null, "uploads/");
   },
   filename: function (
     req: Request,
     file: Express.Multer.File,
     callback: (error: Error | null, filename: string) => void
   ) {
-    callback(null, `/profiles/${Date.now()}_${file.originalname}`);
+    callback(null, `profiles/${Date.now()}_${file.originalname}`);
   },
 });
 const fileFilter = (req: Request, file: Express.Multer.File, callback: any) => {
@@ -52,7 +52,8 @@ module.exports.auth =async function (req:any,res:Response){
     full_name:req.user.full_name,
     username:req.user.username,
     isPrivate:req.user.isPrivate,
-    email:req.user.email
+    email:req.user.email,
+    profileImage:req.user.profileImage
 });
 }
 
@@ -172,7 +173,7 @@ module.exports.updateProfilePicture = async function (
       console.log(err);
       return res.json({ status: false, err });
     }
-    return res.json({ status: true, image: req.file.filename });
+    return res.json({ status: true, image: req.file });
   });
 };
 

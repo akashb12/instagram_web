@@ -26,7 +26,8 @@ interface DefaultStateI {
         full_name:"",
         email:"",
         username:"",
-        isPrivate:false
+        isPrivate:false,
+        profileImage:""
       }
   }
  const mainReducer = (state:DefaultStateI = initialState, action:DispatchTypes):DefaultStateI => {

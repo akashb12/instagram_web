@@ -14,7 +14,7 @@ export default function (SpecificComponent: React.FC, option: boolean) {
         window.location.replace('/')
       }
       else if (!token && option) {
-        console.log('hi')
+        window.location.replace('/login')
       }
     }, [token]);
 

@@ -6,19 +6,14 @@ interface RegisterValues {
   dob: string;
 }
 interface LoginValues {
-    email:string,
-    password:string
+  email: string;
+  password: string;
 }
-
-
-
-
-
 
 // response data
 interface RegisterType {
   status: boolean;
-  alreadyRegistered?:boolean
+  alreadyRegistered?: boolean;
   message?: string;
   error?: string;
 }
@@ -35,8 +30,17 @@ interface AuthType {
   message?: string;
   error?: string;
   id?: number;
-  full_name?:string,
-  email?:string,
-  username?:string,
-  isPrivate?:boolean
+  full_name?: string;
+  email?: string;
+  username?: string;
+  isPrivate?: boolean;
+  profileImage?: string;
+}
+
+
+// user profile
+interface UserProfile {
+  id: number;
+  profileImage: string;
+  full_name:string
 }

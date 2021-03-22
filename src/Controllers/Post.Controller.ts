@@ -12,14 +12,14 @@ const storage = multer.diskStorage({
     file: Express.Multer.File,
     callback: (error: Error | null, destination: string) => void
   ) {
-    callback(null, "./uploads");
+    callback(null, "uploads/");
   },
   filename: function (
     req: Request,
     file: Express.Multer.File,
     callback: (error: Error | null, filename: string) => void
   ) {
-    callback(null, `/posts/${Date.now()}_${file.originalname}`);
+    callback(null, `posts/${Date.now()}_${file.originalname}`);
   },
 });
 const fileFilter = (req: Request, file: Express.Multer.File, callback: any) => {
