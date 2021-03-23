@@ -1,0 +1,33 @@
+.profile_page{
+    max-width: 600px;
+    margin: 0 auto;
+}
+.profile_page_details{
+    display: flex;
+    justify-content: space-around;
+    padding: 18px 0px;
+    border-bottom: 1px solid grey;
+}
+.profile_details{
+    display: flex;
+}
+.profile_details h6{
+    padding-right: 10px;
+}
+.profile_page_images{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 10px 10px;
+}
+img.image_gallery {
+    width: 30%;
+    margin-top: 20px;
+}
+.profile_button{
+    background: white;
+    border-radius: 6px;
+    border: solid 1px grey;
+    padding: 3px 7px;
+    color: black;
+}

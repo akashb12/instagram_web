@@ -34,7 +34,7 @@ const fileFilter = (req: Request, file: Express.Multer.File, callback: any) => {
   }
 };
 
-const upload = multer({ storage: storage, fileFilter: fileFilter }).array(
+const upload = multer({ storage: storage, fileFilter: fileFilter }).single(
   "file"
 );
 
@@ -45,7 +45,7 @@ module.exports.addPostImages = async function (req: Request, res: Response) {
       console.log(err);
       return res.json({ status: false, err });
     }
-    return res.json({ status: true, image: req.files });
+    return res.json({ status: true, image: req.file.path });
   });
 };
 

@@ -213,6 +213,7 @@ module.exports.searchUser = async function (req: any, res: Response) {
 
 // get profile
 module.exports.getProfile = async function (req: any, res: Response) {
+  console.log("target",req.params.targetId,"myid",req.params.myId)
   try {
     const user = await User.query().findById(req.params.targetId);
 
@@ -234,40 +235,60 @@ module.exports.getProfile = async function (req: any, res: Response) {
       .where("userId", "=", req.params.targetId)
       .andWhere("archive", "=", false);
 
-    if (user.isPrivate === true) {
-      if (getProfileDetails.length) {
-        return res.status(200).send({
-          status: true,
-          followers: followers.length,
-          following: following.length,
-          posts: posts,
-          message: "following",
-        });
+    if(req.params.targetId === req.params.myId){
+      return res.status(200).send({
+        status: true,
+        name:user.username,
+        profileImage:user.profileImage,
+        followers: followers.length,
+        following: following.length,
+        posts: posts,
+      });
+    }
+    else{
+      if (user.isPrivate === true) {
+        if (getProfileDetails.length) {
+          return res.status(200).send({
+            status: true,
+            name:user.username,
+            profileImage:user.profileImage,
+            followers: followers.length,
+            following: following.length,
+            posts: posts,
+            message: "following",
+          });
+        } else {
+          return res.status(200).send({
+            status: false,
+            name:user.username,
+            profileImage:user.profileImage,
+            followers: followers.length,
+            following: following.length,
+            message: "not following",
+          });
+        }
       } else {
-        return res.status(200).send({
-          status: false,
-          followers: followers.length,
-          following: following.length,
-          message: "not following",
-        });
-      }
-    } else {
-      if (getProfileDetails.length) {
-        return res.status(200).send({
-          status: true,
-          followers: followers.length,
-          following: following.length,
-          posts: posts,
-          message: "following",
-        });
-      } else {
-        return res.status(200).send({
-          status: false,
-          followers: followers.length,
-          following: following.length,
-          posts: posts,
-          message: "not following",
-        });
+        if (getProfileDetails.length) {
+          return res.status(200).send({
+            status: true,
+            name:user.username,
+            profileImage:user.profileImage,
+            followers: followers.length,
+            following: following.length,
+            posts: posts,
+            message: "following",
+          });
+        } else {
+          return res.status(200).send({
+            status: false,
+            name:user.username,
+            profileImage:user.profileImage,
+            followers: followers.length,
+            following: following.length,
+            posts: posts,
+            message: "not following",
+          });
+        }
       }
     }
   } catch (error) {

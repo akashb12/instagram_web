@@ -1,27 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import './NavBar.css'
+import React, { useEffect, useState,useContext } from 'react'
+import { SearchedUsers } from '../../Context/Context'
+import './NavBar.css';
+import {Link} from 'react-router-dom';
 import { MdHome } from 'react-icons/md';
 import { useSelector } from 'react-redux'
 import axios from 'axios';
 import { RootStore } from '../..';
 const NavBar = () => {
     const token: string = window.sessionStorage.getItem('token')!;
-    const state = useSelector((state: RootStore) => state.mainReducer.auth?.profileImage!);
+    const state = useSelector((state: RootStore) => state.mainReducer.auth!);
     const [Profile, setProfile] = useState<string>("");
+    const [Id, setId] = useState<number>(0);
     const [SearchedUser, setSearchedUser] = useState<string>("");
-    const [Users, setUsers] = useState<UserProfile[]>([{
-        id: 0,
-        profileImage: "",
-        full_name: "",
-    }]);
+    const {Users,setUsers} = useContext(SearchedUsers)
 
     useEffect(() => {
-        setProfile(state)
+        setProfile(state.profileImage!)
+        setId(state.id!)
     }, [state]);
 
-    useEffect(() => {
-        console.log('data', Users)
-    }, [Users]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchedUser(e.target.value)
@@ -49,7 +46,7 @@ const NavBar = () => {
                     <MdHome className="navbar-icons" />
                 </li>
                 <li>
-                    <img className="profile" src={Profile && Profile} alt="no image" />
+                <Link  to={"/profile/" + Id }><img className="profile" src={Profile && Profile} alt="no image" /></Link>
                 </li>
             </div>
         </div>

@@ -10,6 +10,9 @@ interface LoginValues {
   password: string;
 }
 
+
+
+
 // response data
 interface RegisterType {
   status: boolean;
@@ -43,4 +46,18 @@ interface UserProfile {
   id: number;
   profileImage: string;
   full_name:string
+}
+
+
+// user details
+interface UserDetails{
+  profileName:string,
+  profileImage:string,
+  followers:number,
+  following:number,
+  postsCount:number,
+}
+interface UserPosts{
+  id:number,
+  attachment_url:string
 }
