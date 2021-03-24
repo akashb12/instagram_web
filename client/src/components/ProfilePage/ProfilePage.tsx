@@ -46,7 +46,7 @@ const ProfilePage = () => {
     <div className="profile_page">
       <div className="profile_page_details">
         <div>
-          <img style={{ width: "160px", height: "160px", borderRadius: "80px" }} src={ProfileDetails.profileImage} alt="noimage" />
+          <img style={{ width: "160px", height: "160px", borderRadius: "80px" }} src={ProfileDetails.profileImage ? ProfileDetails.profileImage : "/user.png"} alt="noimage" />
         </div>
         <div>
           <h4>{ProfileDetails.profileName}</h4>

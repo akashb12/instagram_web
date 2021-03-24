@@ -103,3 +103,24 @@ module.exports.getComments = async function (req: any, res: Response) {
     });
   }
 };
+
+
+// get all comments
+module.exports.getAllComments = async function (req: Request, res: Response) {
+  const {ids} = req.body;
+  try {
+    if(ids.length){
+      const comments = await Comment.query().select("*").whereIn("postId", ids).withGraphFetched("user");
+    return res.status(200).send({
+      status: true,
+      comments,
+    });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
+};

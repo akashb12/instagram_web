@@ -16,7 +16,10 @@ router.post(
   commentController.removeComment
 );
 
-// get all comments
+// get post comments
 router.post("/getComments/:id", auth, commentController.getComments);
+
+// get all comments
+router.post("/getAllComments", auth, commentController.getAllComments);
 
 module.exports = router;

@@ -2,8 +2,15 @@ import { Request, Response } from "express";
 //const User = require("../DataBase/Models/User");
 const Post = require("../DataBase/Models/Post");
 const SavedPosts = require("../DataBase/Models/SavedPosts");
+const Following = require("../DataBase/Models/Following");
 import multer from "multer";
 const fs = require("fs");
+
+interface Following {
+  id: number;
+  user_id: number;
+  following_id: number;
+}
 
 // multer configuration
 const storage = multer.diskStorage({
@@ -144,17 +151,25 @@ module.exports.unSavePost = async function (req: any, res: Response) {
 };
 
 // get my posts
-module.exports.getMyPosts = async function (req: Request, res: Response) {
+module.exports.getFeeds = async function (req: Request, res: Response) {
   try {
-    const posts = await Post.query()
+    const ids: number[] = [];
+    const following = await Following.query()
       .select("*")
-      .where("userId", "=", req.params.id)
-      .andWhere("archive", "=", false);
+      .where("user_id", "=", req.params.id);
+    const getIds = async (following: Following[]) => {
+      following.map(async (item) => {
+        ids.push(item.following_id);
+      });
+    };
+    await getIds(following);
+    const posts = await Post.query().select("*").whereIn("userId", ids).withGraphFetched("user");
     return res.status(200).send({
       status: true,
       posts,
     });
   } catch (error) {
+    console.log(error);
     return res.status(400).send({
       status: false,
       error,

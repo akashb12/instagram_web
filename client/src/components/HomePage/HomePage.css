@@ -1,3 +1,27 @@
 .image-parent {
     max-width: 40px;
   }
+
+  .home-card{
+    max-width: 500px;
+    height: max-content;
+    margin: 25px auto;
+  }
+  .post_profile{
+    height: 35px;
+    border-radius: 50%;
+    width: 39px;
+    margin: 10px;
+  }
+  .card-image{
+    display: flex;
+    justify-content: center;
+  }
+  .card-image img{
+    width: 32.4vw;
+    height: 40vh;
+  }
+.input-group-append{
+  position: absolute;
+    right: 0;
+}

@@ -19,7 +19,7 @@ router.post("/savePost/:id", auth, postController.savePost);
 router.post("/unsavePost/:id", auth, postController.unSavePost);
 
 // get my posts
-router.post("/getMyPosts/:id", auth, postController.getMyPosts);
+router.post("/getFeeds/:id", auth, postController.getFeeds);
 
 // get saved posts
 router.post("/getSavedPosts/:id", auth, postController.getSavedPosts);
