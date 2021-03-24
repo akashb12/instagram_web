@@ -43,19 +43,19 @@ const upload = multer({ storage: storage, fileFilter: fileFilter }).single(
   "file"
 );
 
-
 // auth
-module.exports.auth =async function (req:any,res:Response){
+module.exports.auth = async function (req: any, res: Response) {
   res.status(200).json({
-    status:true,
+    status: true,
     id: req.user.id,
-    full_name:req.user.full_name,
-    username:req.user.username,
-    isPrivate:req.user.isPrivate,
-    email:req.user.email,
-    profileImage:req.user.profileImage
-});
-}
+    full_name: req.user.full_name,
+    username: req.user.username,
+    isPrivate: req.user.isPrivate,
+    email: req.user.email,
+    profileImage: req.user.profileImage,
+    bio: req.user.bio,
+  });
+};
 
 // register user
 module.exports.register = async function (req: Request, res: Response) {
@@ -187,7 +187,7 @@ module.exports.updateUserDetails = async function (req: any, res: Response) {
         full_name: fullName ? fullName : req.user.full_name,
         profileImage: image ? image : req.user.profileImage,
         bio: bio ? bio : req.user.bio,
-        isPrivate: isPrivate ? isPrivate : req.user.isPrivate,
+        isPrivate: isPrivate,
       });
     if (updateUserDetails) {
       return res.status(200).json({
@@ -213,7 +213,7 @@ module.exports.searchUser = async function (req: any, res: Response) {
 
 // get profile
 module.exports.getProfile = async function (req: any, res: Response) {
-  console.log("target",req.params.targetId,"myid",req.params.myId)
+  console.log("target", req.params.targetId, "myid", req.params.myId);
   try {
     const user = await User.query().findById(req.params.targetId);
 
@@ -235,23 +235,24 @@ module.exports.getProfile = async function (req: any, res: Response) {
       .where("userId", "=", req.params.targetId)
       .andWhere("archive", "=", false);
 
-    if(req.params.targetId === req.params.myId){
+    if (req.params.targetId === req.params.myId) {
       return res.status(200).send({
         status: true,
-        name:user.username,
-        profileImage:user.profileImage,
+        name: user.username,
+        profileImage: user.profileImage,
+        bio:user.bio,
         followers: followers.length,
         following: following.length,
         posts: posts,
       });
-    }
-    else{
+    } else {
       if (user.isPrivate === true) {
         if (getProfileDetails.length) {
           return res.status(200).send({
             status: true,
-            name:user.username,
-            profileImage:user.profileImage,
+            name: user.username,
+            profileImage: user.profileImage,
+            bio:user.bio,
             followers: followers.length,
             following: following.length,
             posts: posts,
@@ -260,8 +261,9 @@ module.exports.getProfile = async function (req: any, res: Response) {
         } else {
           return res.status(200).send({
             status: false,
-            name:user.username,
-            profileImage:user.profileImage,
+            name: user.username,
+            bio:user.bio,
+            profileImage: user.profileImage,
             followers: followers.length,
             following: following.length,
             message: "not following",
@@ -271,8 +273,9 @@ module.exports.getProfile = async function (req: any, res: Response) {
         if (getProfileDetails.length) {
           return res.status(200).send({
             status: true,
-            name:user.username,
-            profileImage:user.profileImage,
+            name: user.username,
+            profileImage: user.profileImage,
+            bio:user.bio,
             followers: followers.length,
             following: following.length,
             posts: posts,
@@ -281,8 +284,8 @@ module.exports.getProfile = async function (req: any, res: Response) {
         } else {
           return res.status(200).send({
             status: false,
-            name:user.username,
-            profileImage:user.profileImage,
+            name: user.username,
+            profileImage: user.profileImage,
             followers: followers.length,
             following: following.length,
             posts: posts,

@@ -12,11 +12,14 @@ import ProfilePage from './components/ProfilePage/ProfilePage';
 import UpdateUser from './components/UpdateUser/UpdateUser';
 
 const App: React.FC = () => {
-  const [Users, setUsers] = useState<UserProfile[]>([{
-    id: 0,
-    profileImage: "",
-    full_name: "",
-  }]);
+
+  // {
+  //   id: 0,
+  //   profileImage: "",
+  //   full_name: "",
+  //   username:""
+  // }
+  const [Users, setUsers] = useState<UserProfile[]>([]);
   return (
     <>
       <Suspense fallback={<div style={{ display: "flex", justifyContent: "center" }}>

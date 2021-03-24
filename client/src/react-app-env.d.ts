@@ -38,6 +38,7 @@ interface AuthType {
   username?: string;
   isPrivate?: boolean;
   profileImage?: string;
+  bio?:string
 }
 
 
@@ -45,7 +46,8 @@ interface AuthType {
 interface UserProfile {
   id: number;
   profileImage: string;
-  full_name:string
+  full_name:string,
+  username:string
 }
 
 
@@ -53,6 +55,7 @@ interface UserProfile {
 interface UserDetails{
   profileName:string,
   profileImage:string,
+  bio:"",
   followers:number,
   following:number,
   postsCount:number,

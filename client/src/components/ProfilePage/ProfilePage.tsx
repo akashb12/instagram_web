@@ -3,7 +3,7 @@ import './ProfilePage.css';
 import axios from 'axios';
 import { RootStore } from '../..';
 import { useSelector } from 'react-redux';
-import { useParams,Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 const ProfilePage = () => {
   interface Params {
     id: string;
@@ -15,6 +15,7 @@ const ProfilePage = () => {
   const [ProfileDetails, setProfileDetails] = useState<UserDetails>({
     profileName: "",
     profileImage: "",
+    bio: "",
     followers: 0,
     following: 0,
     postsCount: 0
@@ -23,20 +24,24 @@ const ProfilePage = () => {
     id: 0,
     attachment_url: ""
   }]);
+
   useEffect(() => {
     axios.post(`/api/user/getProfile/${state?.id}/${id}/?token=` + token).then((response) => {
       setPostImages(response.data.posts)
       setProfileDetails({
         profileName: response.data.name,
         profileImage: response.data.profileImage,
+        bio: response.data.bio,
         followers: response.data.followers,
         following: response.data.following,
         postsCount: response.data.posts && response.data.posts.length,
       })
-
-
     });
   }, [state]);
+
+
+
+
   return (
     <div className="profile_page">
       <div className="profile_page_details">
@@ -50,8 +55,14 @@ const ProfilePage = () => {
             <h6>{ProfileDetails.followers} followers</h6>
             <h6>{ProfileDetails.following} following</h6>
           </div>
+          <div className="bio">
+            <p> {ProfileDetails.bio}</p>
+          </div>
           <div>
-            <Link to={"/updateUser/"+state?.id} className="profile_button">Edit Profile</Link>
+            {
+              state?.id === Number(id) &&
+              <Link to={"/updateUser/" + state?.id} className="profile_button">Edit Profile</Link>
+            }
           </div>
         </div>
       </div>

@@ -1,5 +1,9 @@
+.profile_image{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
 .update_user{
-    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
