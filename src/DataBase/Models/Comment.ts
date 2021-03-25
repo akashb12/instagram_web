@@ -8,7 +8,7 @@ class Comment extends Model {
     const User = require("./User");
     return {
       user: {
-        relation: Model.HasOneRelation,
+        relation: Model.BelongsToOneRelation,
         modelClass: User,
         join: {
           from: "comments.userId",

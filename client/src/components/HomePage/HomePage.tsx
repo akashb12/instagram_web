@@ -17,14 +17,15 @@ const HomePage: React.FC = () => {
     id: number,
     attachment_url: string,
     caption: string,
-    user: PostsUser
+    user: PostsUser,
+    comments:Comments[]
 
   }
 
   interface Comments {
     id: number,
     comment: string,
-    postId: number,
+    userId: number,
     user:PostsUser
   }
 
@@ -33,9 +34,7 @@ const HomePage: React.FC = () => {
   const state = useSelector((state: RootStore) => state.mainReducer.auth!);
   const [Posts, setPosts] = useState<Posts[]>([]);
   const [Comment, setComment] = useState("");
-  const CommentIds: number[] = [];
   const [AllComments, setAllComments] = useState<Comments[]>([]);
-  const [Check, setCheck] = useState(false);
 
   // get posts
   useEffect(() => {
@@ -46,15 +45,15 @@ const HomePage: React.FC = () => {
 
 
   // get comments
-  useEffect(() => {
-    if (!AllComments.length || Check) {
-      setCheck(false)
-      axios.post(`/api/comment/getAllComments?token=` + token, { ids: CommentIds }).then((response) => {
+  // useEffect(() => {
+  //   if (!AllComments.length || Check) {
+  //     setCheck(false)
+  //     axios.post(`/api/comment/getAllComments?token=` + token, { ids: CommentIds }).then((response) => {
 
-        setAllComments(response.data.comments)
-      });
-    }
-  }, [CommentIds]);
+  //       setAllComments(response.data.comments)
+  //     });
+  //   }
+  // }, [CommentIds]);
 
   useEffect(() => {
     console.log('data', AllComments)
@@ -62,7 +61,7 @@ const HomePage: React.FC = () => {
 
   const submitComment = (id: number) => {
     axios.post(`/api/comment/addComment/${id}?token=` + token, { comment: Comment }).then((response) => {
-      setCheck(true)
+
       setAllComments([...AllComments, response.data.insertData])
     });
   }
@@ -96,7 +95,6 @@ const HomePage: React.FC = () => {
       <div className="home">
         {
           Posts.length && Posts.map((post: Posts) => {
-            CommentIds.push(post.id)
             return (
               <div className="card home-card">
                 <div style={{ marginTop: "10px" }}>
@@ -112,18 +110,10 @@ const HomePage: React.FC = () => {
                     <p><span><strong>{post.user.username}</strong></span>&nbsp; {post.caption} </p>
                   </div>
                   <div>
-                    {
-                      AllComments.length && AllComments.map((comment) => {
-                        if (post.id === comment.postId) {
-                          return (
-                            <div>
-                              <span><strong>{comment.user.username}</strong></span>
-                          <span>{comment.comment}</span>
+                  <div>
+                              <span><strong>{post.comments[0].userId}</strong></span>
+                          <span>{post.comments[post.comments.length-1].comment}</span>
                             </div>
-                          )
-                        }
-                      })
-                    }
                   </div>
                   <div className="input-group">
                     <input style={{ height: "auto" }} type="text" className="form-control" placeholder="add a comment" value={Comment} onChange={(e) => setComment(e.target.value)} />

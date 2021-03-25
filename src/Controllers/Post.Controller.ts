@@ -163,7 +163,7 @@ module.exports.getFeeds = async function (req: Request, res: Response) {
       });
     };
     await getIds(following);
-    const posts = await Post.query().select("*").whereIn("userId", ids).withGraphFetched("user");
+    const posts = await Post.query().select("*").whereIn("userId", ids).withGraphFetched("comments.[user]").withGraphFetched("user");
     return res.status(200).send({
       status: true,
       posts,
