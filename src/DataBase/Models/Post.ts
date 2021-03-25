@@ -1,15 +1,21 @@
 import { Model } from "objection";
-
-class Post extends Model {
+import {User} from './User';
+import {Comment} from './Comment';
+export class Post extends Model {
+  id!:number
+  caption!: string
+  attachment_url!: string
+  tagged_users!: number[]
+  comments_enabled!: boolean
+  archive!: boolean
+  user_id!: number
   static get tableName() {
     return "posts";
   }
   static get relationMappings() {
-    const User = require("./User");
-    const Comments = require("./Comment");
     return {
       user: {
-        relation: Model.HasOneRelation,
+        relation: Model.BelongsToOneRelation,
         modelClass: User,
         join: {
           from: "posts.userId",
@@ -18,7 +24,7 @@ class Post extends Model {
       },
       comments: {
         relation: Model.HasManyRelation,
-        modelClass: Comments,
+        modelClass: Comment,
         join: {
           from: "comments.postId",
           to: "posts.id",
@@ -27,4 +33,3 @@ class Post extends Model {
     };
   }
 }
-module.exports = Post;

@@ -1,11 +1,12 @@
 import { Model } from "objection";
-
-class Request extends Model {
+import {User} from './User';
+export class Requests extends Model {
+  user_id!: number
+  request_id!: number
   static get tableName() {
     return "requests";
   }
   static get relationMappings() {
-    const User = require("./User");
     return {
       user: {
         relation: Model.HasOneRelation,
@@ -18,4 +19,3 @@ class Request extends Model {
     };
   }
 }
-module.exports = Request;

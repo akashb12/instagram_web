@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-const User = require("../DataBase/Models/User");
-const Follower = require("../DataBase/Models/Follower");
-const Following = require("../DataBase/Models/Following");
-const Request = require("../DataBase/Models/Request");
+import { User } from "../DataBase/Models/User";
+import { Follower } from "../DataBase/Models/Follower";
+import { Following } from "../DataBase/Models/Following";
+import { Requests } from "../DataBase/Models/Request";
 // add follow
 module.exports.addFollower = async function (req: any, res: Response) {
     try {
         const user = await User.query().findById(req.params.followToId);
-    if(user.isPrivate===true){
-        const insertData = await Request.query().insert({
+    if(user.is_private===true){
+        const insertData = await Requests.query().insert({
             user_id: req.params.followToId,
             request_id: req.params.followById,
           });
@@ -20,11 +20,11 @@ module.exports.addFollower = async function (req: any, res: Response) {
     }
     else{
         const insertFollower = await Follower.query().insert({
-            userId: req.params.followToId,
+            user_id: req.params.followToId,
             follower_id: req.params.followById,
           });
           const insertFollowing = await Following.query().insert({
-            userId: req.params.followById,
+            user_id: req.params.followById,
             following_id: req.params.followToId,
           });
           return res.status(200).send({
@@ -52,7 +52,7 @@ module.exports.acceptRequest = async function (req: any, res: Response) {
             user_id: req.params.requestBy,
             following_id: req.params.requestFor,
           });
-            const removeData = await Request.query().deleteById(req.params.requestId)
+            const removeData = await Requests.query().deleteById(req.params.requestId)
             return res.status(200).send({
                 status: true,
                 message: "accepted",
@@ -69,7 +69,7 @@ module.exports.acceptRequest = async function (req: any, res: Response) {
 // reject request
 module.exports.rejectRequest = async function (req: any, res: Response) {
   try {
-          const removeData = await Request.query().deleteById(req.params.id)
+          const removeData = await Requests.query().deleteById(req.params.id)
           return res.status(200).send({
               status: true,
               message: "rejected",
@@ -105,7 +105,7 @@ module.exports.unFollow = async function (req: any, res: Response) {
 // get all requests
 module.exports.getAllRequests = async function (req: any, res: Response) {
   try {
-    const getAllRequests = await Request.query()
+    const getAllRequests = await Requests.query()
     .select("*")
     .where("user_id", "=", req.params.id)
     .withGraphFetched("user");

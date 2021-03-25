@@ -1,13 +1,20 @@
 import { Request, Response, NextFunction } from "express";
-const User = require("../DataBase/Models/User");
+import { User } from "../DataBase/Models/User";
+import jwt from "jsonwebtoken";
+import { config } from "../Config/key";
 
+interface Token {
+  id: number;
+  iat: number;
+  exp: number;
+}
 async function auth(req: any, res: any, next: any) {
-  let token = req.body.token;
-  if (token === undefined) {
-    token = req.query.token;
-  }
+  console.log('token',req.headers)
+  const token = req.headers.authorization.split(" ")[1];
+
   try {
-    const users = await User.query().findOne({ token: token });
+    const verifyToken = jwt.verify(token, config.JWT_SECRET) as Token;
+    const users = await User.query().findOne({ id: verifyToken.id });
     if (users) {
       req.token = token;
       req.user = users;
@@ -15,10 +22,11 @@ async function auth(req: any, res: any, next: any) {
     } else {
       return res.json({
         status: false,
-        message:'user invalid'
+        message: "user invalid",
       });
     }
   } catch (error) {
+    console.log(error);
     return res.json({
       status: false,
       error: error,

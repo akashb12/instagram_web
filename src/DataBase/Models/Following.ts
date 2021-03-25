@@ -1,14 +1,16 @@
 import { Model } from "objection";
-
-class Following extends Model {
+import {User} from './User';
+export class Following extends Model {
+  id!: number;
+  user_id!: number;
+  following_id!: number;
   static get tableName() {
     return "following";
   }
   static get relationMappings() {
-    const User = require("./User");
     return {
       user: {
-        relation: Model.HasOneRelation,
+        relation: Model.BelongsToOneRelation,
         modelClass: User,
         join: {
           from: "following.following_id",
@@ -18,4 +20,3 @@ class Following extends Model {
     };
   }
 }
-module.exports = Following;

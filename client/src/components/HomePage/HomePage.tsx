@@ -18,7 +18,7 @@ const HomePage: React.FC = () => {
     attachment_url: string,
     caption: string,
     user: PostsUser,
-    comments:Comments[]
+    comments: Comments[]
 
   }
 
@@ -26,7 +26,7 @@ const HomePage: React.FC = () => {
     id: number,
     comment: string,
     userId: number,
-    user:PostsUser
+    user: PostsUser
   }
 
   const { Users, setUsers } = useContext(SearchedUsers);
@@ -35,10 +35,12 @@ const HomePage: React.FC = () => {
   const [Posts, setPosts] = useState<Posts[]>([]);
   const [Comment, setComment] = useState("");
   const [AllComments, setAllComments] = useState<Comments[]>([]);
-
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+};
   // get posts
   useEffect(() => {
-    axios.post(`/api/post/getFeeds/${state?.id}?token=` + token).then((response) => {
+    axios.post(`/api/post/getFeeds/${state?.id}`,null, config).then((response) => {
       setPosts(response.data.posts)
     });
   }, [state]);
@@ -55,9 +57,7 @@ const HomePage: React.FC = () => {
   //   }
   // }, [CommentIds]);
 
-  useEffect(() => {
-    console.log('data', AllComments)
-  }, [AllComments]);
+
 
   const submitComment = (id: number) => {
     axios.post(`/api/comment/addComment/${id}?token=` + token, { comment: Comment }).then((response) => {
@@ -110,10 +110,10 @@ const HomePage: React.FC = () => {
                     <p><span><strong>{post.user.username}</strong></span>&nbsp; {post.caption} </p>
                   </div>
                   <div>
-                  <div>
-                              <span><strong>{post.comments[0].userId}</strong></span>
-                          <span>{post.comments[post.comments.length-1].comment}</span>
-                            </div>
+                    <div>
+                      <span><strong>{post.comments[0].user.username}</strong></span>
+                      <span>{post.comments[post.comments.length - 1].comment}</span>
+                    </div>
                   </div>
                   <div className="input-group">
                     <input style={{ height: "auto" }} type="text" className="form-control" placeholder="add a comment" value={Comment} onChange={(e) => setComment(e.target.value)} />

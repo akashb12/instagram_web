@@ -1,11 +1,10 @@
 import { Model } from "objection";
-
-class Comment extends Model {
+import {User} from './User';
+export class Comment extends Model {
   static get tableName() {
     return "comments";
   }
   static get relationMappings() {
-    const User = require("./User");
     return {
       user: {
         relation: Model.BelongsToOneRelation,
@@ -18,4 +17,3 @@ class Comment extends Model {
     };
   }
 }
-module.exports = Comment;

@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 //const User = require("../DataBase/Models/User");
-const Post = require("../DataBase/Models/Post");
-const SavedPosts = require("../DataBase/Models/SavedPosts");
-const Following = require("../DataBase/Models/Following");
+import { Post } from "../DataBase/Models/Post";
+import { SavedPosts } from "../DataBase/Models/SavedPosts";
+import {Following} from '../DataBase/Models/Following';
 import multer from "multer";
 const fs = require("fs");
 
-interface Following {
+interface Followings {
   id: number;
   user_id: number;
   following_id: number;
@@ -72,9 +72,9 @@ module.exports.addPost = async function (req: Request, res: Response) {
       caption: caption,
       attachment_url: attachment_url,
       tagged_users: tagged_users,
-      commentsEnabled: commentsEnabled,
+      comments_enabled: commentsEnabled,
       archive: archive,
-      userId: userId,
+      user_id: userId,
     });
     return res.status(200).send({
       status: true,
@@ -157,7 +157,7 @@ module.exports.getFeeds = async function (req: Request, res: Response) {
     const following = await Following.query()
       .select("*")
       .where("user_id", "=", req.params.id);
-    const getIds = async (following: Following[]) => {
+    const getIds = async (following: Followings[]) => {
       following.map(async (item) => {
         ids.push(item.following_id);
       });
@@ -202,7 +202,7 @@ module.exports.toggleComments = async function (req: Request, res: Response) {
   try {
     const post = await Post.query().findById(req.params.id);
     const toggleComments = await Post.query().findById(req.params.id).patch({
-      commentsEnabled: !post.commentsEnabled,
+      comments_enabled: !post.comments_enabled,
     });
     return res.status(200).send({
       status: true,
@@ -239,7 +239,7 @@ module.exports.archive = async function (req: Request, res: Response) {
 module.exports.deletePost = async function (req: any, res: Response) {
   try {
     const post = await Post.query().findById(req.params.id);
-    if (post.userId === req.user.id) {
+    if (post.user_id === req.user.id) {
       const removeData = await Post.query().deleteById(req.params.id);
       return res.status(200).send({
         status: true,

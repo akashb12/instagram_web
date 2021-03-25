@@ -1,11 +1,12 @@
 import { Model } from "objection";
-
-class SavedPosts extends Model {
+import { Post } from "./Post";
+export class SavedPosts extends Model {
+  postId!: number;
+  userId!: number;
   static get tableName() {
     return "saved_posts";
   }
   static get relationMappings() {
-    const Post = require("./Post");
     return {
       posts: {
         relation: Model.HasOneRelation,
@@ -18,4 +19,3 @@ class SavedPosts extends Model {
     };
   }
 }
-module.exports = SavedPosts;

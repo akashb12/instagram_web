@@ -1,11 +1,12 @@
 import express, { Application} from 'express';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import path from 'path'
 const setupDb = require('./DataBase/DbSetup')
 const app: Application = express();
 // setting up database
 setupDb();
-
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 

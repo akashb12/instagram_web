@@ -1,11 +1,12 @@
 import { Model } from "objection";
+import {User} from "./User";
 
-class Like extends Model {
+export class Like extends Model {
   static get tableName() {
     return "likes";
   }
   static get relationMappings() {
-    const User = require("./User");
+
     return {
       user: {
         relation: Model.HasOneRelation,
@@ -18,4 +19,3 @@ class Like extends Model {
     };
   }
 }
-module.exports = Like;
