@@ -1,6 +1,8 @@
 import { Model } from "objection";
 import {User} from './User';
 import {Comment} from './Comment';
+import {Like} from './Like';
+import { SavedPosts } from "./SavedPosts";
 export class Post extends Model {
   id!:number
   caption!: string
@@ -18,7 +20,7 @@ export class Post extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: User,
         join: {
-          from: "posts.userId",
+          from: "posts.user_id",
           to: "user.id",
         },
       },
@@ -26,7 +28,23 @@ export class Post extends Model {
         relation: Model.HasManyRelation,
         modelClass: Comment,
         join: {
-          from: "comments.postId",
+          from: "comments.post_id",
+          to: "posts.id",
+        },
+      },
+      likes: {
+        relation: Model.HasManyRelation,
+        modelClass: Like,
+        join: {
+          from: "likes.post_id",
+          to: "posts.id",
+        },
+      },
+      saved_posts: {
+        relation: Model.HasManyRelation,
+        modelClass: SavedPosts,
+        join: {
+          from: "saved_posts.post_id",
           to: "posts.id",
         },
       },

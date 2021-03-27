@@ -68,3 +68,19 @@
     width: 39px;
 
 }
+#dropdown-basic{
+    background: white;
+    border: navajowhite;
+    padding: 0px;
+}
+#dropdown-basic:focus{
+    border: none;
+}
+.btn.focus, .btn:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0 rgb(0 123 255 / 25%);
+}
+.btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show>.btn-primary.dropdown-toggle:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0 rgb(0 123 255 / 25%);
+}

@@ -8,8 +8,6 @@ import auth from '../MiddleWare/Auth'
 router.post("/addLike/:id", auth, likeController.addLike);
 
 
-// remove like
-router.post("/removeLike/:id", auth, likeController.removeLike);
 
 // get likes
 router.post("/getLikes/:id", auth, likeController.getLikes);

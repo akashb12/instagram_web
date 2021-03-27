@@ -48,9 +48,9 @@ module.exports.auth = async function (req: any, res: Response) {
     id: req.user.id,
     full_name: req.user.full_name,
     username: req.user.username,
-    is_private: req.user.isPrivate,
+    isPrivate: req.user.is_private,
     email: req.user.email,
-    profileImage: req.user.profileImage,
+    profileImage: req.user.profile_image,
     bio: req.user.bio,
   });
 };
@@ -178,7 +178,7 @@ module.exports.updateUserDetails = async function (req: any, res: Response) {
       .findById(req.user.id)
       .patch({
         full_name: fullName ? fullName : req.user.full_name,
-        profile_image: image ? image : req.user.profileImage,
+        profile_image: image ? image : req.user.profile_image,
         bio: bio ? bio : req.user.bio,
         is_private: isPrivate,
       });

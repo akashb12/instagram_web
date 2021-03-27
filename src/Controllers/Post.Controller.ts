@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 //const User = require("../DataBase/Models/User");
 import { Post } from "../DataBase/Models/Post";
 import { SavedPosts } from "../DataBase/Models/SavedPosts";
-import {Following} from '../DataBase/Models/Following';
+import { Following } from "../DataBase/Models/Following";
+import { Like } from "../DataBase/Models/Like";
 import multer from "multer";
 const fs = require("fs");
 
@@ -115,16 +116,30 @@ module.exports.editPost = async function (req: Request, res: Response) {
 
 // save post
 module.exports.savePost = async function (req: any, res: Response) {
+  const savedPosts = await SavedPosts.query().findOne({
+    post_id: req.params.id,
+    user_id: req.user.id,
+  });
+  console.log(savedPosts);
   try {
-    const insertData = await SavedPosts.query().insert({
-      postId: req.params.id,
-      userId: req.user.id,
-    });
-    return res.status(200).send({
-      status: true,
-      message: "post saved",
-      insertData,
-    });
+    if (savedPosts) {
+      const removeData = await SavedPosts.query().deleteById(savedPosts.id);
+      return res.status(200).send({
+        status: true,
+        removed: true,
+        removeData,
+      });
+    } else {
+      const insertData = await SavedPosts.query().insert({
+        post_id: req.params.id,
+        user_id: req.user.id,
+      });
+      return res.status(200).send({
+        status: true,
+        added: true,
+        insertData,
+      });
+    }
   } catch (error) {
     return res.status(400).send({
       status: false,
@@ -163,7 +178,14 @@ module.exports.getFeeds = async function (req: Request, res: Response) {
       });
     };
     await getIds(following);
-    const posts = await Post.query().select("*").whereIn("userId", ids).withGraphFetched("comments.[user]").withGraphFetched("user");
+    const posts = await Post.query()
+      .select("*")
+      .whereIn("user_id", ids)
+      .withGraphFetched("comments.[user]")
+      .withGraphFetched("likes.[user]")
+      .withGraphFetched("user")
+      .withGraphFetched("saved_posts")
+      .select([Post.relatedQuery("likes").count().as("likesCount")]);
     return res.status(200).send({
       status: true,
       posts,
@@ -182,7 +204,7 @@ module.exports.getSavedPosts = async function (req: Request, res: Response) {
   try {
     const allPosts = await SavedPosts.query()
       .select("*")
-      .where("userId", "=", req.params.id)
+      .where("user_id", "=", req.params.id)
       .withGraphFetched("posts");
     return res.status(200).send({
       status: true,

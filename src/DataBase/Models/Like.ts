@@ -2,6 +2,9 @@ import { Model } from "objection";
 import {User} from "./User";
 
 export class Like extends Model {
+  id!:number
+  post_id!:number
+  user_id!:number
   static get tableName() {
     return "likes";
   }
@@ -9,10 +12,10 @@ export class Like extends Model {
 
     return {
       user: {
-        relation: Model.HasOneRelation,
+        relation: Model.BelongsToOneRelation,
         modelClass: User,
         join: {
-          from: "likes.userId",
+          from: "likes.user_id",
           to: "user.id",
         },
       },

@@ -1,20 +1,21 @@
 import { Request, Response } from "express";
-const Comment = require("../DataBase/Models/Comment");
-const Post = require("../DataBase/Models/Post");
+import { Comment } from "../DataBase/Models/Comment";
+import { Post } from "../DataBase/Models/Post";
 // add comment
 module.exports.addComment = async function (req: any, res: Response) {
   try {
     const insertData = await Comment.query().insert({
-      postId: req.params.id,
-      userId: req.user.id,
+      post_id: req.params.id,
+      user_id: req.user.id,
       comment: req.body.comment,
-    });
+    }).withGraphFetched('user');
     return res.status(200).send({
       status: true,
       message: "comment added",
       insertData,
     });
   } catch (error) {
+    console.log(error)
     return res.status(400).send({
       status: false,
       error,
@@ -28,11 +29,11 @@ module.exports.editComment = async function (req: any, res: Response) {
 
   try {
     const comments = await Comment.query().findById(req.params.id);
-    if (comments.userId === req.user.id) {
+    if (comments.user_id === req.user.id) {
       const editComment = await Comment.query()
         .findById(req.params.id)
         .patch({
-          comment: comments ? comment : comments.comment,
+          comment: comment,
         });
       return res.status(200).send({
         status: true,
@@ -57,14 +58,14 @@ module.exports.removeComment = async function (req: any, res: Response) {
   try {
     const post = await Post.query().findById(req.params.postId);
     const comment = await Comment.query().findById(req.params.commentId);
-    if (post.userId === req.user.id) {
+    if (post.user_id === req.user.id) {
       const removeData = await Comment.query().deleteById(req.params.commentId);
       return res.status(200).send({
         status: true,
         message: "comment removed",
         removeData,
       });
-    } else if (comment.userId === req.user.id) {
+    } else if (comment.user_id === req.user.id) {
       const removeData = await Comment.query().deleteById(req.params.commentId);
       return res.status(200).send({
         status: true,

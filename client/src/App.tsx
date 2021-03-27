@@ -6,10 +6,11 @@ import LoginPage from "./components/LoginPage/LoginPage";
 import RegisterPage from "./components/RegisterPage/RegisterPage";
 import Auth from "./auth/Auth";
 import HomePage from "./components/HomePage/HomePage";
-import NavBar from "./components/NavBar/NavBar";
+
 import { SearchedUsers } from "./Context/Context";
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import UpdateUser from "./components/UpdateUser/UpdateUser";
+import SavedPosts from "./components/SavedPosts/SavedPosts";
 
 const App: React.FC = () => {
   // {
@@ -30,7 +31,6 @@ const App: React.FC = () => {
       >
         <Router>
           <SearchedUsers.Provider value={{ Users, setUsers }}>
-            <NavBar />
             <Switch>
               <div>
                 <Route exact path="/" component={Auth(HomePage, true)} />
@@ -49,6 +49,11 @@ const App: React.FC = () => {
                   exact
                   path="/updateUser/:id"
                   component={Auth(UpdateUser, true)}
+                />
+                <Route
+                  exact
+                  path="/savedPosts/:id"
+                  component={Auth(SavedPosts, true)}
                 />
               </div>
             </Switch>

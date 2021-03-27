@@ -21,7 +21,7 @@ interface DefaultStateI {
       auth:{
         status:false,
         message:"",
-        error:"",
+        error:{name:""},
         id:0,
         full_name:"",
         email:"",

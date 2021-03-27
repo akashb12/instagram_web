@@ -7,6 +7,8 @@ export default function (SpecificComponent: React.FC, option: boolean) {
   function AuthenticationCheck() {
     const dispatch = useDispatch();
     const token: string = window.sessionStorage.getItem('token') || "";
+    const state = useSelector((state: RootStore) => state.mainReducer.auth!);
+
 
     useEffect(() => {
       dispatch(Authentication(token))

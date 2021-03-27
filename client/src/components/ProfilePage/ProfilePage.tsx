@@ -4,6 +4,7 @@ import axios from 'axios';
 import { RootStore } from '../..';
 import { useSelector } from 'react-redux';
 import { useParams, Link } from "react-router-dom";
+import NavBar from '../NavBar/NavBar';
 const ProfilePage = () => {
   interface Params {
     id: string;
@@ -24,9 +25,13 @@ const ProfilePage = () => {
     id: 0,
     attachment_url: ""
   }]);
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+
 
   useEffect(() => {
-    axios.post(`/api/user/getProfile/${state?.id}/${id}/?token=` + token).then((response) => {
+    axios.post(`/api/user/getProfile/${state?.id}/${id}`, null, config).then((response) => {
       setPostImages(response.data.posts)
       setProfileDetails({
         profileName: response.data.name,
@@ -34,7 +39,7 @@ const ProfilePage = () => {
         bio: response.data.bio,
         followers: response.data.followers,
         following: response.data.following,
-        postsCount: response.data.posts && response.data.posts.length,
+        postsCount: response.data.postCount,
       })
     });
   }, [state]);
@@ -43,6 +48,8 @@ const ProfilePage = () => {
 
 
   return (
+    <>
+    <NavBar />
     <div className="profile_page">
       <div className="profile_page_details">
         <div>
@@ -68,13 +75,14 @@ const ProfilePage = () => {
       </div>
       <div className="profile_page_images">
         {
-          PostImages && PostImages.map((post: UserPosts) => {
+        PostImages &&  PostImages.length >= 1 && PostImages.map((post: UserPosts) => {
             return (
               <img className="image_gallery" src={post.attachment_url} alt="no image" />
             )
           })
         }</div>
     </div>
+    </>
   )
 }
 

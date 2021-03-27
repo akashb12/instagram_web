@@ -31,7 +31,7 @@ interface LoginType {
 interface AuthType {
   status: boolean;
   message?: string;
-  error?: string;
+  error?: AuthError;
   id?: number;
   full_name?: string;
   email?: string;
@@ -40,12 +40,15 @@ interface AuthType {
   profileImage?: string;
   bio?:string
 }
+interface AuthError{
+  name:string,
+}
 
 
 // user profile
 interface UserProfile {
   id: number;
-  profileImage: string;
+  profile_image: string;
   full_name:string,
   username:string
 }
