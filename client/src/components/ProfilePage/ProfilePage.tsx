@@ -6,9 +6,7 @@ import { useSelector } from 'react-redux';
 import { useParams, Link } from "react-router-dom";
 import NavBar from '../NavBar/NavBar';
 const ProfilePage = () => {
-  interface Params {
-    id: string;
-  }
+
 
   const token: string = window.sessionStorage.getItem('token')!;
   const state = useSelector((state: RootStore) => state.mainReducer.auth!);

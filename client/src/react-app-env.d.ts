@@ -67,3 +67,18 @@ interface UserPosts{
   id:number,
   attachment_url:string
 }
+
+
+// params
+interface Params {
+  id: string;
+}
+
+interface Likes {
+  user_id: number,
+  user: LikesUser
+}
+interface LikesDataType{
+  isOpen:boolean
+  AllLikes:Likes[]
+}

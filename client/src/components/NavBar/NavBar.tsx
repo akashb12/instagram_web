@@ -90,7 +90,7 @@ const NavBar = () => {
 
   <Dropdown.Menu  style={{    top: '10px'}}>
     <Dropdown.Item ><Link to={"/profile/" + Id}><BiUserCircle style={{fontSize:"1.2rem"}} /> &nbsp; profile</Link></Dropdown.Item>
-    <Dropdown.Item ><Link to={"/savedPosts/" + Id}><BiSave style={{fontSize:"1.2rem"}} /> &nbsp; Saved</Link></Dropdown.Item>
+    <Dropdown.Item ><Link to={"/savedPosts"}><BiSave style={{fontSize:"1.2rem"}} /> &nbsp; Saved</Link></Dropdown.Item>
   </Dropdown.Menu>
 </Dropdown>
                 </li>

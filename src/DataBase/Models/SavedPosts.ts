@@ -13,7 +13,7 @@ export class SavedPosts extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Post,
         join: {
-          from: "saved_posts.postId",
+          from: "saved_posts.post_id",
           to: "posts.id",
         },
       },

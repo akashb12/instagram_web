@@ -52,7 +52,7 @@ const App: React.FC = () => {
                 />
                 <Route
                   exact
-                  path="/savedPosts/:id"
+                  path="/savedPosts"
                   component={Auth(SavedPosts, true)}
                 />
               </div>
