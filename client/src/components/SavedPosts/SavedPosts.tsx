@@ -11,6 +11,12 @@ interface savedPosts {
     posts: UserPosts
 }
 const SavedPosts: React.FC = () => {
+
+    const Auth = () => {
+        window.sessionStorage.removeItem('token')
+        window.location.replace('/login')
+      }
+
     const token: string = window.sessionStorage.getItem('token')!;
     const state = useSelector((state: RootStore) => state.mainReducer.auth!);
     const config = {
@@ -23,8 +29,12 @@ const SavedPosts: React.FC = () => {
 
     useEffect(() => {
         axios.post(`/api/post/getSavedPosts/${state?.id}`, null, config).then((response) => {
-            console.log(response.data)
-            setAllSavedPosts(response.data.allPosts)
+            if(response.data.status){
+                setAllSavedPosts(response.data.allPosts)
+            }
+            else{
+                Auth()
+            }
         });
     }, [state]);
     return (

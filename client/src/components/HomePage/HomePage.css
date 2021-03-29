@@ -29,6 +29,7 @@
 .input-group-append {
   position: absolute;
   right: 0;
+  z-index: 3;
 }
 .post_icon svg {
   font-size: 1.8rem;

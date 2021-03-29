@@ -199,6 +199,27 @@ module.exports.getFeeds = async function (req: Request, res: Response) {
   }
 };
 
+// get my posts
+module.exports.getPostDetails = async function (req: Request, res: Response) {
+  try {
+
+    const post = await Post.query().findOne({id:req.params.id})
+      .withGraphFetched("comments.[user]")
+      .withGraphFetched("likes.[user]")
+      .withGraphFetched("user")
+    return res.status(200).send({
+      status: true,
+      post,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
+};
+
 // get saved posts
 module.exports.getSavedPosts = async function (req: Request, res: Response) {
   try {

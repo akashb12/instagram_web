@@ -11,6 +11,7 @@ import { SearchedUsers } from "./Context/Context";
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import UpdateUser from "./components/UpdateUser/UpdateUser";
 import SavedPosts from "./components/SavedPosts/SavedPosts";
+import DetailProductPage from "./components/DetailProductPage/DetailProductPage";
 
 const App: React.FC = () => {
   // {
@@ -54,6 +55,11 @@ const App: React.FC = () => {
                   exact
                   path="/savedPosts"
                   component={Auth(SavedPosts, true)}
+                />
+                <Route
+                  exact
+                  path="/detailProductPage/:id"
+                  component={Auth(DetailProductPage, true)}
                 />
               </div>
             </Switch>

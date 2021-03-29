@@ -3,7 +3,7 @@ import { SearchedUsers } from "../../Context/Context";
 import "./NavBar.css";
 import { Link, useLocation } from "react-router-dom";
 import { MdHome } from "react-icons/md";
-import { BiUserCircle,BiSave } from "react-icons/bi";
+import { BiUserCircle,BiSave,BiLogOut } from "react-icons/bi";
 import {Dropdown} from 'react-bootstrap'
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -16,11 +16,14 @@ const NavBar = () => {
     const [SearchedUser, setSearchedUser] = useState<string>("");
     const [Check, setCheck] = useState(false);
     const { Users, setUsers } = useContext(SearchedUsers);
-    const existingIds = Users.map((user: UserProfile) => user.id);
     let location = useLocation();
     const config = {
         headers: { Authorization: `Bearer ${token}` }
       };
+      const Auth = () => {
+        window.sessionStorage.removeItem('token')
+        window.location.replace('/login')
+      }
 
     useEffect(() => {
         setProfile(state.profileImage!);
@@ -91,6 +94,7 @@ const NavBar = () => {
   <Dropdown.Menu  style={{    top: '10px'}}>
     <Dropdown.Item ><Link to={"/profile/" + Id}><BiUserCircle style={{fontSize:"1.2rem"}} /> &nbsp; profile</Link></Dropdown.Item>
     <Dropdown.Item ><Link to={"/savedPosts"}><BiSave style={{fontSize:"1.2rem"}} /> &nbsp; Saved</Link></Dropdown.Item>
+    <Dropdown.Item onClick={()=>Auth()} ><BiLogOut style={{fontSize:"1.2rem"}} /> &nbsp; Logout</Dropdown.Item>
   </Dropdown.Menu>
 </Dropdown>
                 </li>

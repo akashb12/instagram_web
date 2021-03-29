@@ -249,7 +249,7 @@ module.exports.getProfile = async function (req: any, res: Response) {
           });
         } else {
           return res.status(200).send({
-            status: false,
+            status: true,
             name: user.username,
             bio: user.bio,
             profileImage: user.profile_image,
@@ -274,7 +274,7 @@ module.exports.getProfile = async function (req: any, res: Response) {
           });
         } else {
           return res.status(200).send({
-            status: false,
+            status: true,
             name: user.username,
             profileImage: user.profile_image,
             postCount: user.postCount,

@@ -21,7 +21,8 @@
     padding: 10px 10px;
 }
 img.image_gallery {
-    width: 30%;
+    width: 18vw;
+    height: 18vh;
     margin-top: 20px;
 }
 .profile_button{

@@ -31,6 +31,11 @@ const UpdateUser = () => {
     headers: { Authorization: `Bearer ${token}` },
   };
 
+  const Auth = () => {
+    window.sessionStorage.removeItem('token')
+    window.location.replace('/login')
+  }
+
   const handleImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = e.target.files && e.target.files[0];
     if (fileList) {
@@ -48,11 +53,15 @@ const UpdateUser = () => {
       axios
         .post("/api/user/updateProfilePicture", formData, config)
         .then((response) => {
-          console.log("data", response.data.image.path);
+         if(response.data.status){
           setDataToSubmit({
             ...DataToSubmit,
             image: "http://localhost:5000/" + response.data.image.path,
           });
+         }
+         else{
+           Auth()
+         }
         });
     }
   };
@@ -77,7 +86,10 @@ const UpdateUser = () => {
     axios
       .post("/api/user/updateUserDetails", DataToSubmit, config)
       .then((response) => {
-        console.log("data", response.data);
+        if(response.data.status){
+          console.log("data", response.data);
+        }
+        else{Auth()}
       });
   };
   return (

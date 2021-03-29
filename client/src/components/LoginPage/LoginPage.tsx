@@ -28,6 +28,7 @@ const LoginPage: React.FC = () => {
     const state = useSelector((state: RootStore) => state.mainReducer.login);
     if (state?.status) {
         window.sessionStorage.setItem('token', state.token || '')
+        window.location.replace('/')
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

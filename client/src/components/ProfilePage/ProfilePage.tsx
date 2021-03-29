@@ -26,19 +26,28 @@ const ProfilePage = () => {
   const config = {
     headers: { Authorization: `Bearer ${token}` }
   };
+  const Auth = () => {
+    window.sessionStorage.removeItem('token')
+    window.location.replace('/login')
+  }
 
 
   useEffect(() => {
     axios.post(`/api/user/getProfile/${state?.id}/${id}`, null, config).then((response) => {
-      setPostImages(response.data.posts)
-      setProfileDetails({
-        profileName: response.data.name,
-        profileImage: response.data.profileImage,
-        bio: response.data.bio,
-        followers: response.data.followers,
-        following: response.data.following,
-        postsCount: response.data.postCount,
-      })
+      if(response.data.status){
+        setPostImages(response.data.posts)
+        setProfileDetails({
+          profileName: response.data.name,
+          profileImage: response.data.profileImage,
+          bio: response.data.bio,
+          followers: response.data.followers,
+          following: response.data.following,
+          postsCount: response.data.postCount,
+        })
+      }
+      else{
+        Auth()
+      }
     });
   }, [state]);
 
@@ -75,7 +84,10 @@ const ProfilePage = () => {
         {
         PostImages &&  PostImages.length >= 1 && PostImages.map((post: UserPosts) => {
             return (
+              <Link to={"/detailProductPage/"+post.id}>
               <img className="image_gallery" src={post.attachment_url} alt="no image" />
+              </Link>
+
             )
           })
         }</div>

@@ -9,7 +9,12 @@ export default function (SpecificComponent: React.FC, option: boolean) {
     const token: string = window.sessionStorage.getItem('token') || "";
     const state = useSelector((state: RootStore) => state.mainReducer.auth!);
 
-
+// useEffect(() => {
+//   if(state && state.error && state.error.name==="TokenExpiredError" ){
+//     window.sessionStorage.removeItem('token')
+//     window.location.replace('/login')
+//   }
+// }, [token]);
     useEffect(() => {
       dispatch(Authentication(token))
       if (token && !option) {

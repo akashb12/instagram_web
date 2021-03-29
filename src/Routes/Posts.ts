@@ -21,6 +21,9 @@ router.post("/unsavePost/:id", auth, postController.unSavePost);
 // get my posts
 router.post("/getFeeds/:id", auth, postController.getFeeds);
 
+// get post details
+router.post("/getPostDetails/:id", auth, postController.getPostDetails);
+
 // get saved posts
 router.post("/getSavedPosts/:id", auth, postController.getSavedPosts);
 
