@@ -181,6 +181,7 @@ module.exports.getFeeds = async function (req: Request, res: Response) {
     const posts = await Post.query()
       .select("*")
       .whereIn("user_id", ids)
+      .andWhere("archive","=", false)
       .withGraphFetched("comments.[user]")
       .withGraphFetched("likes.[user]")
       .withGraphFetched("user")

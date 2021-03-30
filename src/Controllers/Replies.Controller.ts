@@ -61,6 +61,7 @@ module.exports.removeReply = async function (req: any, res: Response) {
   try {
     const post = await Post.query().findById(req.params.postId);
     const replies = await Reply.query().findById(req.params.replyId);
+    console.log(replies)
     if (post.user_id === req.user.id) {
       const removeData = await Reply.query().deleteById(req.params.replyId);
       return res.status(200).send({
@@ -69,7 +70,7 @@ module.exports.removeReply = async function (req: any, res: Response) {
         removeData,
       });
     } else if (replies.user_id === req.user.id) {
-      const removeData = await Comment.query().deleteById(req.params.replyId);
+      const removeData = await Reply.query().deleteById(req.params.replyId);
       return res.status(200).send({
         status: true,
         message: "reply removed",

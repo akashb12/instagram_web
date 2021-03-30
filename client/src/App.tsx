@@ -12,6 +12,7 @@ import ProfilePage from "./components/ProfilePage/ProfilePage";
 import UpdateUser from "./components/UpdateUser/UpdateUser";
 import SavedPosts from "./components/SavedPosts/SavedPosts";
 import DetailProductPage from "./components/DetailProductPage/DetailProductPage";
+import AddPosts from "./components/AddPosts/AddPosts";
 
 const App: React.FC = () => {
   // {
@@ -60,6 +61,11 @@ const App: React.FC = () => {
                   exact
                   path="/detailProductPage/:id"
                   component={Auth(DetailProductPage, true)}
+                />
+                <Route
+                  exact
+                  path="/addPost/"
+                  component={Auth(AddPosts, true)}
                 />
               </div>
             </Switch>

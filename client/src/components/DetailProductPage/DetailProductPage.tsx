@@ -24,6 +24,7 @@ interface PostsUser {
 
 interface Posts {
   id: number;
+  comments_enabled: boolean;
   attachment_url: string;
   caption: string;
   likes: Likes[];
@@ -64,6 +65,7 @@ const DetailProductPage: React.FC = () => {
     id: 0,
     attachment_url: "",
     caption: "",
+    comments_enabled: true,
     likes: [],
     user: {
       id: 0,
@@ -104,6 +106,7 @@ const DetailProductPage: React.FC = () => {
           setPostDetails({
             id: response.data.post.id,
             attachment_url: response.data.post.attachment_url,
+            comments_enabled: response.data.post.comments_enabled,
             caption: response.data.post.caption,
             likes: response.data.post.likes,
             user: {
@@ -197,27 +200,37 @@ const DetailProductPage: React.FC = () => {
           });
           getFeeds();
         } else if (response.data.error.name === "TokenExpiredError") {
-          Auth()
+          Auth();
         }
       });
   };
 
-//   remove comment
-const deleteComment=(postId:number,commentId:number)=>{
+  //   remove comment
+  const deleteComment = (postId: number, commentId: number) => {
     axios
-    .post(
-      `/api/comment/removeComment/${postId}/${commentId}`,
-      null,
-      config
-    )
-    .then((response) => {
-      if (response.data.status) {
-        getFeeds();
-      } else if (response.data.error.name === "TokenExpiredError") {
-       Auth()
-      }
-    })
-}
+      .post(`/api/comment/removeComment/${postId}/${commentId}`, null, config)
+      .then((response) => {
+        if (response.data.status) {
+          getFeeds();
+        } else if (response.data.error.name === "TokenExpiredError") {
+          Auth();
+        }
+      });
+  };
+
+  // delete reply
+  //   remove comment
+  const deleteReply = (postId: number, replyId: number) => {
+    axios
+      .post(`/api/reply/removeReply/${postId}/${replyId}`, null, config)
+      .then((response) => {
+        if (response.data.status) {
+          getFeeds();
+        } else if (response.data.error.name === "TokenExpiredError") {
+          Auth();
+        }
+      });
+  };
   return (
     <>
       <div
@@ -271,84 +284,127 @@ const deleteComment=(postId:number,commentId:number)=>{
                 &nbsp;
                 <span>{PostDetails && PostDetails.caption}</span>
               </div>
-              <div
-                className="comments"
-                style={{ height: "28vh", overflowY: "auto" }}
-              >
-                {PostDetails.comments.map((comment: Comments) => {
-                  return (
-                    <div className="post_comments_replies">
-                      <div className="post_user">
-                        <div>
-                          <img
-                            className="detail_post_profile"
-                            src={comment.user.profile_image}
-                            alt="no image"
-                          />
-                        </div>
-                        <div
-                          className="post_username"
-                          style={{ width: "100%" }}
-                        >
-                          <span>
-                            <strong>{comment.user.username}</strong>
-                          </span>
-                          &nbsp;
-                          <span>{comment.comment}</span>
-                          {PostDetails.user.id === state.id ? (
-                            <span className="delete_comment">
-                              <AiFillDelete onClick={()=>deleteComment(comment.id,PostDetails.id)} />
-                            </span>
-                          ) : (
-                            comment.user.id === state.id && (
-                              <span className="delete_comment">
-                                <AiFillDelete onClick={()=>deleteComment(PostDetails.id,comment.id)} />
-                              </span>
-                            )
-                          )}
-                          <p
-                            style={{ cursor: "pointer" }}
-                            onClick={() =>
-                              setReplies(PostDetails.id, comment.id)
-                            }
+              {PostDetails.comments_enabled ? (
+                <div
+                  className="comments"
+                  style={{ height: "28vh", overflowY: "auto" }}
+                >
+                  {PostDetails.comments.map((comment: Comments) => {
+                    return (
+                      <div className="post_comments_replies">
+                        <div className="post_user">
+                          <div>
+                            <img
+                              className="detail_post_profile"
+                              src={comment.user.profile_image}
+                              alt="no image"
+                            />
+                          </div>
+                          <div
+                            className="post_username"
+                            style={{ width: "100%" }}
                           >
-                            <small>
-                              <strong>Reply</strong>
-                            </small>
-                          </p>
-                        </div>
-                      </div>
-                      {PostDetails.replies.map((reply: Replies) => {
-                        if (comment.id === reply.comment_id) {
-                          return (
-                            <div className="post_user ml-5">
-                              <div>
-                                <img
-                                  className="detail_post_profile"
-                                  src={reply.user.profile_image}
-                                  alt="no image"
+                            <span>
+                              <strong>{comment.user.username}</strong>
+                            </span>
+                            &nbsp;
+                            <span>{comment.comment}</span>
+                            {PostDetails.user.id === state.id ? (
+                              <span className="delete_comment">
+                                <AiFillDelete
+                                  onClick={() =>
+                                    deleteComment(PostDetails.id, comment.id)
+                                  }
                                 />
-                              </div>
-                              <div>
-                                <span className="post_username">
-                                  <strong>{reply.user.username}</strong>
+                              </span>
+                            ) : (
+                              comment.user.id === state.id && (
+                                <span className="delete_comment">
+                                  <AiFillDelete
+                                    onClick={() =>
+                                      deleteComment(PostDetails.id, comment.id)
+                                    }
+                                  />
                                 </span>
-                                &nbsp;
-                                <span>{reply.reply}</span>
+                              )
+                            )}
+                            <p
+                              style={{ cursor: "pointer" }}
+                              onClick={() =>
+                                setReplies(PostDetails.id, comment.id)
+                              }
+                            >
+                              <small>
+                                <strong>Reply</strong>
+                              </small>
+                            </p>
+                          </div>
+                        </div>
+                        {PostDetails.replies.map((reply: Replies) => {
+                          if (comment.id === reply.comment_id) {
+                            return (
+                              <div className="post_user ml-5">
+                                <div>
+                                  <img
+                                    className="detail_post_profile"
+                                    src={reply.user.profile_image}
+                                    alt="no image"
+                                  />
+                                </div>
+                                <div
+                                  className="post_username"
+                                  style={{ width: "100%" }}
+                                >
+                                  <span>
+                                    <strong>{reply.user.username}</strong>
+                                  </span>
+                                  &nbsp;
+                                  <span>{reply.reply}</span>
+                                  {PostDetails.user.id === state.id ? (
+                                    <span className="delete_comment">
+                                      <AiFillDelete
+                                        onClick={() =>
+                                          deleteReply(PostDetails.id, reply.id)
+                                        }
+                                      />
+                                    </span>
+                                  ) : (
+                                    reply.user.id === state.id && (
+                                      <span className="delete_comment">
+                                        <AiFillDelete
+                                          onClick={() =>
+                                            deleteReply(
+                                              PostDetails.id,
+                                              reply.id
+                                            )
+                                          }
+                                        />
+                                      </span>
+                                    )
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          );
-                        }
-                      })}
-                    </div>
-                  );
-                })}
-              </div>
-
-
+                            );
+                          }
+                        })}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <h6
+                  style={{
+                    textAlign: "center",
+                    marginTop: "20vh",
+                    marginBottom: "20vh",
+                  }}
+                >
+                  comments turned off
+                </h6>
+              )}
 
               {/* like save */}
-              <hr />
+              <hr className="mt-0 mb-0" />
               <div className="post_icon margin">
                 {PostDetails.likes.filter(
                   (like) => like.user_id === state.id || 0
@@ -385,8 +441,6 @@ const deleteComment=(postId:number,commentId:number)=>{
                 )}
               </div>
 
-
-
               {/* likes */}
               <div className="likes_count margin">
                 <Link
@@ -400,10 +454,8 @@ const deleteComment=(postId:number,commentId:number)=>{
                 </Link>
               </div>
 
-
-
               {/* add comment and reply */}
-              {IsReply ? (
+              {IsReply && PostDetails.comments_enabled ? (
                 <div
                   className="input-group"
                   style={{
@@ -430,31 +482,33 @@ const deleteComment=(postId:number,commentId:number)=>{
                   </div>
                 </div>
               ) : (
-                <div
-                  className="input-group"
-                  style={{
-                    position: "absolute",
-                    bottom: "0px",
-                  }}
-                >
-                  <input
-                    style={{ height: "auto", padding: "15px 10px" }}
-                    type="text"
-                    className="form-control"
-                    placeholder="Add a comment"
-                    value={Comment}
-                    onChange={(e) => handleChange(e)}
-                  />
-                  <div className="input-group-append_post_page ">
-                    <button
-                      className="btn"
-                      type="button"
-                      onClick={() => submitComment(PostDetails.id)}
-                    >
-                      Post
-                    </button>
+                PostDetails.comments_enabled && (
+                  <div
+                    className="input-group"
+                    style={{
+                      position: "absolute",
+                      bottom: "0px",
+                    }}
+                  >
+                    <input
+                      style={{ height: "auto", padding: "15px 10px" }}
+                      type="text"
+                      className="form-control"
+                      placeholder="Add a comment"
+                      value={Comment}
+                      onChange={(e) => handleChange(e)}
+                    />
+                    <div className="input-group-append_post_page ">
+                      <button
+                        className="btn"
+                        type="button"
+                        onClick={() => submitComment(PostDetails.id)}
+                      >
+                        Post
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )
               )}
             </div>
           </div>

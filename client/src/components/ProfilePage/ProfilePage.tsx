@@ -84,7 +84,7 @@ const ProfilePage = () => {
         {
         PostImages &&  PostImages.length >= 1 && PostImages.map((post: UserPosts) => {
             return (
-              <Link to={"/detailProductPage/"+post.id}>
+              <Link className="profile_link" to={"/detailProductPage/"+post.id}>
               <img className="image_gallery" src={post.attachment_url} alt="no image" />
               </Link>
 

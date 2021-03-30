@@ -23,8 +23,12 @@
   z-index: 3;
 }
 .delete_comment{
+  display: none;
+}
+.post_user:hover .delete_comment{
   position: relative;
   float: right;
+  display: block;
 }
 @media screen and (min-width: 576px) {
   .post_modal .modal-dialog {

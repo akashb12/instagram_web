@@ -9,7 +9,6 @@ interface Token {
   exp: number;
 }
 async function auth(req: any, res: any, next: any) {
-  console.log("token", req.headers);
   const token = req.headers.authorization.split(" ")[1];
 
   try {
