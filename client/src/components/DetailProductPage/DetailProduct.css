@@ -3,12 +3,28 @@
   height: 70vh;
 }
 
-.post_user{
-    margin: 10px 10px;
+.post_user {
+  margin: 10px 10px;
+  display: flex;
 }
 
 .post_user .post_username {
   margin-left: 20px;
+}
+.detail_post_profile {
+  height: 35px;
+  border-radius: 50%;
+  width: 39px;
+}
+.input-group-append_post_page {
+  padding: 10px 10px;
+  position: absolute;
+  right: 0;
+  z-index: 3;
+}
+.delete_comment{
+  position: relative;
+  float: right;
 }
 @media screen and (min-width: 576px) {
   .post_modal .modal-dialog {

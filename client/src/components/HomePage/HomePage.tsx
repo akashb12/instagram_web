@@ -73,9 +73,9 @@ const HomePage: React.FC = () => {
       .then((response) => {
         if(response.data.status){
           setPosts(response.data.posts);
-        }else{
-          getFeeds();
-        }
+        }else if(response.data.error.name === "TokenExpiredError"){
+          Auth()
+      }
       }).catch((error) => {
         console.log('error', error)
       })
@@ -101,7 +101,9 @@ const HomePage: React.FC = () => {
         if(response.data.status){
           getFeeds();
         }
-        else { Auth() }
+        else if(response.data.error.name === "TokenExpiredError"){
+          Auth()
+      }
       });
   };
   const submitLike = (id: number) => {
@@ -111,7 +113,9 @@ const HomePage: React.FC = () => {
       } else if (response.data.removed) {
         getFeeds();
       }
-      else { Auth() }
+      else if(response.data.error.name === "TokenExpiredError"){
+        Auth()
+    }
     });
   };
 
@@ -123,6 +127,9 @@ const HomePage: React.FC = () => {
       } else if (response.data.removed) {
         getFeeds();
       }
+      else if(response.data.error.name === "TokenExpiredError"){
+        Auth()
+    }
     });
   };
   return (
@@ -207,7 +214,6 @@ const HomePage: React.FC = () => {
                         setLikesData({ isOpen: true, AllLikes: post.likes });
                       }}
                     >
-                      {" "}
                       <strong>{post.likesCount}</strong>&nbsp;
                       <strong>likes</strong>
                     </Link>

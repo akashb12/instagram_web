@@ -3,6 +3,7 @@ import {User} from './User';
 import {Comment} from './Comment';
 import {Like} from './Like';
 import { SavedPosts } from "./SavedPosts";
+import { Reply } from "./Reply";
 export class Post extends Model {
   id!:number
   caption!: string
@@ -45,6 +46,14 @@ export class Post extends Model {
         modelClass: SavedPosts,
         join: {
           from: "saved_posts.post_id",
+          to: "posts.id",
+        },
+      },
+      replies: {
+        relation: Model.HasManyRelation,
+        modelClass: Reply,
+        join: {
+          from: "replies.post_id",
           to: "posts.id",
         },
       },

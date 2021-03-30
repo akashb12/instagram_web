@@ -4,18 +4,20 @@ import { Post } from "../DataBase/Models/Post";
 // add comment
 module.exports.addComment = async function (req: any, res: Response) {
   try {
-    const insertData = await Comment.query().insert({
-      post_id: req.params.id,
-      user_id: req.user.id,
-      comment: req.body.comment,
-    }).withGraphFetched('user');
+    const insertData = await Comment.query()
+      .insert({
+        post_id: req.params.id,
+        user_id: req.user.id,
+        comment: req.body.comment,
+      })
+      .withGraphFetched("user");
     return res.status(200).send({
       status: true,
       message: "comment added",
       insertData,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(400).send({
       status: false,
       error,
@@ -30,11 +32,9 @@ module.exports.editComment = async function (req: any, res: Response) {
   try {
     const comments = await Comment.query().findById(req.params.id);
     if (comments.user_id === req.user.id) {
-      const editComment = await Comment.query()
-        .findById(req.params.id)
-        .patch({
-          comment: comment,
-        });
+      const editComment = await Comment.query().findById(req.params.id).patch({
+        comment: comment,
+      });
       return res.status(200).send({
         status: true,
         message: "comment updated",
@@ -78,6 +78,7 @@ module.exports.removeComment = async function (req: any, res: Response) {
       });
     }
   } catch (error) {
+    console.log(error);
     return res.status(400).send({
       status: false,
       error,
@@ -105,17 +106,19 @@ module.exports.getComments = async function (req: any, res: Response) {
   }
 };
 
-
 // get all comments
 module.exports.getAllComments = async function (req: Request, res: Response) {
-  const {ids} = req.body;
+  const { ids } = req.body;
   try {
-    if(ids.length){
-      const comments = await Comment.query().select("*").whereIn("postId", ids).withGraphFetched("user");
-    return res.status(200).send({
-      status: true,
-      comments,
-    });
+    if (ids.length) {
+      const comments = await Comment.query()
+        .select("*")
+        .whereIn("postId", ids)
+        .withGraphFetched("user");
+      return res.status(200).send({
+        status: true,
+        comments,
+      });
     }
   } catch (error) {
     console.log(error);

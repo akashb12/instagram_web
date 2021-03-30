@@ -207,6 +207,9 @@ module.exports.getPostDetails = async function (req: Request, res: Response) {
       .withGraphFetched("comments.[user]")
       .withGraphFetched("likes.[user]")
       .withGraphFetched("user")
+      .withGraphFetched("saved_posts")
+      .withGraphFetched("user")
+      .withGraphFetched("replies.[user]")
     return res.status(200).send({
       status: true,
       post,

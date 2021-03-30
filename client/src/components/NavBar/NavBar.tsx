@@ -3,8 +3,8 @@ import { SearchedUsers } from "../../Context/Context";
 import "./NavBar.css";
 import { Link, useLocation } from "react-router-dom";
 import { MdHome } from "react-icons/md";
-import { BiUserCircle,BiSave,BiLogOut } from "react-icons/bi";
-import {Dropdown} from 'react-bootstrap'
+import { BiUserCircle, BiSave, BiLogOut } from "react-icons/bi";
+import { Dropdown } from 'react-bootstrap'
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { RootStore } from "../..";
@@ -19,11 +19,11 @@ const NavBar = () => {
     let location = useLocation();
     const config = {
         headers: { Authorization: `Bearer ${token}` }
-      };
-      const Auth = () => {
+    };
+    const Auth = () => {
         window.sessionStorage.removeItem('token')
         window.location.replace('/login')
-      }
+    }
 
     useEffect(() => {
         setProfile(state.profileImage!);
@@ -33,10 +33,9 @@ const NavBar = () => {
     useEffect(() => {
 
         if (Check) {
-            console.log("checked")
             const delayDebounceFn = setTimeout(() => {
                 axios
-                    .post("/api/user/searchUser", { name: SearchedUser },config)
+                    .post("/api/user/searchUser", { name: SearchedUser }, config)
                     .then((response) => {
                         setUsers(response.data.users);
 
@@ -87,16 +86,16 @@ const NavBar = () => {
                 </li>
                 <li>
                     <Dropdown>
-  <Dropdown.Toggle  id="dropdown-basic">
-  <img className="profile" src={Profile && Profile} alt="no image"  />
-  </Dropdown.Toggle>
+                        <Dropdown.Toggle id="dropdown-basic">
+                            <img className="profile" src={Profile && Profile} alt="no image" />
+                        </Dropdown.Toggle>
 
-  <Dropdown.Menu  style={{    top: '10px'}}>
-    <Dropdown.Item ><Link to={"/profile/" + Id}><BiUserCircle style={{fontSize:"1.2rem"}} /> &nbsp; profile</Link></Dropdown.Item>
-    <Dropdown.Item ><Link to={"/savedPosts"}><BiSave style={{fontSize:"1.2rem"}} /> &nbsp; Saved</Link></Dropdown.Item>
-    <Dropdown.Item onClick={()=>Auth()} ><BiLogOut style={{fontSize:"1.2rem"}} /> &nbsp; Logout</Dropdown.Item>
-  </Dropdown.Menu>
-</Dropdown>
+                        <Dropdown.Menu style={{ top: '10px' }}>
+                            <Dropdown.Item ><Link to={"/profile/" + Id}><BiUserCircle style={{ fontSize: "1.2rem" }} /> &nbsp; profile</Link></Dropdown.Item>
+                            <Dropdown.Item ><Link to={"/savedPosts"}><BiSave style={{ fontSize: "1.2rem" }} /> &nbsp; Saved</Link></Dropdown.Item>
+                            <Dropdown.Item onClick={() => Auth()} ><BiLogOut style={{ fontSize: "1.2rem" }} /> &nbsp; Logout</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </li>
             </div>
         </div>
