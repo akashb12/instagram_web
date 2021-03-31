@@ -198,7 +198,7 @@ module.exports.updateUserDetails = async function (req: any, res: Response) {
 module.exports.searchUser = async function (req: any, res: Response) {
   const { name } = req.body;
   try {
-    const users = await User.query().where("username", "like", `%${name}%`);
+    const users = await User.query().where("username", "ilike", `%${name}%`).limit(10);
     return res.status(200).json({ status: true, users });
   } catch (error) {
     return res.status(400).json({ status: false, error });
@@ -220,19 +220,23 @@ module.exports.getProfile = async function (req: any, res: Response) {
       ]);
     const getProfileDetails = await Follower.query().findOne({
       user_id: req.params.targetId,
-      follower_id:req.params.myId
-    })
-      // .select("*")
-      // .where("user_id", "=", req.params.targetId)
-      // .andWhere("follower_id", "=", req.params.myId);
+      follower_id: req.params.myId,
+    });
 
-      const requested = await Requests.query()
-      .findOne({user_id:req.params.targetId, request_id:req.params.myId})
+    console.log("posts", user);
+    // .select("*")
+    // .where("user_id", "=", req.params.targetId)
+    // .andWhere("follower_id", "=", req.params.myId);
+
+    const requested = await Requests.query().findOne({
+      user_id: req.params.targetId,
+      request_id: req.params.myId,
+    });
 
     if (req.params.targetId === req.params.myId) {
       return res.status(200).send({
         status: true,
-        id:user.id,
+        id: user.id,
         name: user.username,
         profileImage: user.profile_image,
         bio: user.bio,
@@ -246,8 +250,8 @@ module.exports.getProfile = async function (req: any, res: Response) {
         if (getProfileDetails) {
           return res.status(200).send({
             status: true,
-            id:user.id,
-            followId:getProfileDetails.id,
+            id: user.id,
+            followId: getProfileDetails.id,
             name: user.username,
             profileImage: user.profile_image,
             bio: user.bio,
@@ -260,7 +264,7 @@ module.exports.getProfile = async function (req: any, res: Response) {
         } else {
           return res.status(200).send({
             status: true,
-            id:user.id,
+            id: user.id,
             name: user.username,
             bio: user.bio,
             profileImage: user.profile_image,
@@ -268,15 +272,15 @@ module.exports.getProfile = async function (req: any, res: Response) {
             followers: user.followerCount,
             following: user.followingCount,
             message: "not following",
-            requested:requested ? true: false
+            requested: requested ? true : false,
           });
         }
       } else {
         if (getProfileDetails) {
           return res.status(200).send({
             status: true,
-            id:user.id,
-            followId:getProfileDetails.id,
+            id: user.id,
+            followId: getProfileDetails.id,
             name: user.username,
             profileImage: user.profile_image,
             bio: user.bio,
@@ -289,7 +293,7 @@ module.exports.getProfile = async function (req: any, res: Response) {
         } else {
           return res.status(200).send({
             status: true,
-            id:user.id,
+            id: user.id,
             name: user.username,
             profileImage: user.profile_image,
             postCount: user.postCount,
@@ -331,5 +335,32 @@ module.exports.deleteUser = async function (req: any, res: Response) {
       status: false,
       error,
     });
+  }
+};
+
+// add seed data
+module.exports.addSeed = async function (req: Request, res: Response) {
+  for (let i = 0; i < 20; i++) {
+    try {
+      const salt = await bcrypt.genSalt(saltRounds);
+      const hash = await bcrypt.hash("123456", salt);
+      if(hash){
+        const insertData = await User.query().insert({
+          full_name: "akash" + i,
+          email: "akash" + i + "@gmail.com",
+          password: hash,
+          dob: "Wed Mar 17 2021",
+          username: "akash" + i,
+          is_private: true,
+        });
+        console.log(insertData);
+      }
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send({
+        status: false,
+        error: error,
+      });
+    }
   }
 };

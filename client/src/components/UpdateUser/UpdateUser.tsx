@@ -98,7 +98,7 @@ const UpdateUser = () => {
       <div className="profile_image">
         <img
           style={{ width: "160px", height: "160px", borderRadius: "80px" }}
-          src={ProfileImg.profileImg}
+          src={ProfileImg.profileImg?ProfileImg.profileImg:"/user.png"}
           alt="noimage"
         />
       </div>

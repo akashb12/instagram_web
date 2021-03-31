@@ -130,7 +130,7 @@ const ProfilePage = () => {
                 ProfileDetails.requested ? (
                 <button className="profile_button">Requested</button>
               ) : (
-                <button className="profile_button" onClick={() => follow()}>
+                <button style={{background:'blue' ,color:'white'}} className="profile_button" onClick={() => follow()}>
                   Follow
                 </button>
               )}

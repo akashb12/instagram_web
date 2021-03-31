@@ -30,4 +30,6 @@ router.post("/getProfile/:myId/:targetId", auth, userController.getProfile);
 
 // search user
 router.post("/deleteUser", auth, userController.deleteUser);
+
+router.post("/addSeed", userController.addSeed);
 module.exports = router;

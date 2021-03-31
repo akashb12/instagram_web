@@ -336,14 +336,14 @@ const DetailProductPage: React.FC = () => {
                 />
                 <span className="post_username">
                   <strong>{PostDetails && PostDetails.user.username}</strong>
+                  &nbsp;
+                  {PostDetails && PostDetails.caption}
                 </span>
-                &nbsp;
-                <span>{PostDetails && PostDetails.caption}</span>
               </div>
               {PostDetails.comments_enabled ? (
                 <div
                   className="comments"
-                  style={{ height: "28vh", overflowY: "auto" }}
+                  style={{ height: "26vh", overflowY: "auto" }}
                 >
                   {PostDetails.comments.map((comment: Comments) => {
                     return (

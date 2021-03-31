@@ -39,7 +39,7 @@ export class User extends Model {
         relation: Model.HasManyRelation,
         modelClass: Follower,
         join: {
-          from: "followers.follower_id",
+          from: "followers.user_id",
           to: "user.id",
         },
       },
@@ -47,7 +47,7 @@ export class User extends Model {
         relation: Model.HasManyRelation,
         modelClass: Following,
         join: {
-          from: "following.following_id",
+          from: "following.user_id",
           to: "user.id",
         },
       },

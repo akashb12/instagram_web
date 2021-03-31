@@ -7,7 +7,7 @@ import RegisterPage from "./components/RegisterPage/RegisterPage";
 import Auth from "./auth/Auth";
 import HomePage from "./components/HomePage/HomePage";
 
-import { SearchedUsers } from "./Context/Context";
+
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import UpdateUser from "./components/UpdateUser/UpdateUser";
 import SavedPosts from "./components/SavedPosts/SavedPosts";
@@ -22,7 +22,7 @@ const App: React.FC = () => {
   //   full_name: "",
   //   username:""
   // }
-  const [Users, setUsers] = useState<UserProfile[]>([]);
+
   return (
     <>
       <Suspense
@@ -33,7 +33,7 @@ const App: React.FC = () => {
         }
       >
         <Router>
-          <SearchedUsers.Provider value={{ Users, setUsers }}>
+
             <Switch>
               <div>
                 <Route exact path="/" component={Auth(HomePage, true)} />
@@ -75,7 +75,6 @@ const App: React.FC = () => {
                 />
               </div>
             </Switch>
-          </SearchedUsers.Provider>
         </Router>
       </Suspense>
     </>

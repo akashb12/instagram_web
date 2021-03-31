@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import '../LoginPage/LoginPage.css'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
@@ -22,6 +22,7 @@ const RegisterPage: React.FC = () => {
         resolver: yupResolver(schema),
     });
     const [Error, setError] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [Value, setValue] = useState<RegisterValues>({
         email: "",
         fullName: "",
@@ -37,16 +38,20 @@ const RegisterPage: React.FC = () => {
             ...Value, [e.target.name]: e.target.value
         });
     }
-
-    // submit
-    const submitForm = (): void => {
-        dispatch(Register(Value));
+    useEffect(() => {
+       if(submitted){
         if (state?.status) {
             window.location.replace('/login')
         }
         else{
             setError(true)
         }
+       }
+    }, [state]);
+    // submit
+    const submitForm = (): void => {
+        dispatch(Register(Value));
+        setSubmitted(true)
     }
     return (
         <div className="login-page">

@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { SearchedUsers, ModalContext } from "../../Context/Context";
+import React, { useEffect, useState } from "react";
 import "./HomePage.css";
 import {
   AiOutlineHeart,
@@ -12,6 +11,7 @@ import { RootStore } from "../..";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import NavBar from "../NavBar/NavBar";
+import { SearchedUsers, ModalContext } from "../../Context/Context";
 import LikesModel from "./LikesModel";
 const HomePage: React.FC = () => {
   interface PostsUser {
@@ -41,8 +41,6 @@ const HomePage: React.FC = () => {
     comment: string;
     user: PostsUser;
   }
-
-  const { Users, setUsers } = useContext(SearchedUsers);
   const token: string = window.sessionStorage.getItem("token")!;
   const state = useSelector((state: RootStore) => state.mainReducer.auth!);
   const [Posts, setPosts] = useState<Posts[]>([]);
@@ -53,6 +51,7 @@ const HomePage: React.FC = () => {
     isOpen: false,
     AllLikes: [],
   });
+  const [Users, setUsers] = useState<UserProfile[]>([]);
 
   const config = {
     headers: { Authorization: `Bearer ${token}` },
@@ -132,14 +131,21 @@ const HomePage: React.FC = () => {
   };
   return (
     <>
-      <NavBar />
+      <SearchedUsers.Provider
+        value={{ Users, setUsers }}
+      >
+        <NavBar />
+      </SearchedUsers.Provider>
       <div className="container">
         <div
           className="row"
           style={{ display: "flex", justifyContent: "center" }}
         >
           <div className="col-12 col-sm-8 col-lg-5">
-            <ul className="list-group">
+            <ul
+              className="list-group"
+              style={{ height: "33vh", overflowY: "auto", overflowX: "hidden" }}
+            >
               {Users &&
                 Users.map((user: UserProfile) => {
                   return (
@@ -266,7 +272,7 @@ const HomePage: React.FC = () => {
             );
           })
         ) : (
-          <h2>no posts</h2>
+          <h2 style={{ textAlign: "center" }}>no posts</h2>
         )}
         <ModalContext.Provider value={{ LikesData, setLikesData }}>
           <LikesModel />
