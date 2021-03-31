@@ -15,8 +15,8 @@ router.post("/editPost/:id", auth, postController.editPost);
 // save posts
 router.post("/savePost/:id", auth, postController.savePost);
 
-// unsave posts
-router.post("/unsavePost/:id", auth, postController.unSavePost);
+// get edit post details
+router.post("/getEditablePost/:id", auth, postController.getEditablePost);
 
 // get my posts
 router.post("/getFeeds/:id", auth, postController.getFeeds);

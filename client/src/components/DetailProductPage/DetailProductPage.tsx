@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { RootStore } from "../..";
 import { ModalContext } from "../../Context/Context";
 import { useSelector } from "react-redux";
@@ -9,10 +9,14 @@ import {
   AiOutlineSave,
   AiFillSave,
   AiFillDelete,
+  AiOutlineUser,
 } from "react-icons/ai";
+import {
+  BsThreeDots
+} from "react-icons/bs";
 import { useParams, Link } from "react-router-dom";
 import "./DetailProduct.css";
-import { Modal } from "react-bootstrap";
+import { Modal, Overlay, Button, Tooltip,Dropdown } from "react-bootstrap";
 import LikesModel from "../HomePage/LikesModel";
 
 // interface
@@ -32,6 +36,7 @@ interface Posts {
   comments: Comments[];
   saved_posts: SavedPost[];
   replies: Replies[];
+  tagged_users: string[];
 }
 
 interface SavedPost {
@@ -75,6 +80,7 @@ const DetailProductPage: React.FC = () => {
     comments: [],
     saved_posts: [],
     replies: [],
+    tagged_users: [],
   });
   const [LikesData, setLikesData] = useState<LikesDataType>({
     isOpen: false,
@@ -87,6 +93,8 @@ const DetailProductPage: React.FC = () => {
     commentId: 0,
     reply: "",
   });
+  const [show, setShow] = useState(false);
+  const target = useRef(null);
 
   useEffect(() => {
     getFeeds();
@@ -117,6 +125,7 @@ const DetailProductPage: React.FC = () => {
             comments: response.data.post.comments,
             saved_posts: response.data.post.saved_posts,
             replies: response.data.post.replies,
+            tagged_users: response.data.post.tagged_users,
           });
         } else if (response.data.error.name === "TokenExpiredError") {
           Auth();
@@ -231,6 +240,18 @@ const DetailProductPage: React.FC = () => {
         }
       });
   };
+
+  const deletePost=(id:number)=>{
+    axios
+    .post(`/api/post/deletePost/${id}`, null, config)
+    .then((response) => {
+      if (response.data.status) {
+        window.location.replace(`/profile/${state.id}`)
+      } else if (response.data.error.name === "TokenExpiredError") {
+        Auth();
+      }
+    });
+  }
   return (
     <>
       <div
@@ -255,8 +276,43 @@ const DetailProductPage: React.FC = () => {
                 src={PostDetails && PostDetails.attachment_url}
                 alt="no image"
               />
+              <Button
+                className="hide_button"
+                ref={target}
+                onClick={() => setShow(!show)}
+              >
+                <AiOutlineUser />
+              </Button>
+              <Overlay target={target.current} show={show} placement="right">
+                {(props) => (
+                  <Tooltip id="overlay-example" {...props}>
+                    {PostDetails.tagged_users.map((name: string) => {
+                      return (
+                        <div>
+                          <span>{name}</span>
+                        </div>
+                      );
+                    })}
+                  </Tooltip>
+                )}
+              </Overlay>
             </div>
             <div className="post_right_side col-md-4 pr-0 pl-0">
+          {
+            state.id===PostDetails.user.id &&
+            <div>
+            <Dropdown style={{float:'right'}}>
+            <Dropdown.Toggle variant="success" id="dropdown-basic">
+            <BsThreeDots style={{color:'black'}}  />
+   </Dropdown.Toggle>
+
+   <Dropdown.Menu>
+     <Dropdown.Item ><Link to={"/editPost/"+ PostDetails.id}>Edit Post</Link></Dropdown.Item>
+     <Dropdown.Item onClick={()=>deletePost(PostDetails.id)}>Delete Post</Dropdown.Item>
+   </Dropdown.Menu>
+ </Dropdown>
+            </div>
+          }
               <div className="post_user">
                 <img
                   className="detail_post_profile"

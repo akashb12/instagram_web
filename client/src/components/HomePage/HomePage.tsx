@@ -63,22 +63,23 @@ const HomePage: React.FC = () => {
   }, [state]);
 
   const Auth = () => {
-    window.sessionStorage.removeItem('token')
-    window.location.replace('/login')
-  }
+    window.sessionStorage.removeItem("token");
+    window.location.replace("/login");
+  };
 
   const getFeeds = () => {
     axios
       .post(`/api/post/getFeeds/${state?.id}`, null, config)
       .then((response) => {
-        if(response.data.status){
+        if (response.data.status) {
           setPosts(response.data.posts);
-        }else if(response.data.error.name === "TokenExpiredError"){
-          Auth()
-      }
-      }).catch((error) => {
-        console.log('error', error)
+        } else if (response.data.error.name === "TokenExpiredError") {
+          Auth();
+        }
       })
+      .catch((error) => {
+        console.log("error", error);
+      });
   };
 
   const handleChange = (
@@ -98,12 +99,11 @@ const HomePage: React.FC = () => {
         config
       )
       .then((response) => {
-        if(response.data.status){
+        if (response.data.status) {
           getFeeds();
+        } else if (response.data.error.name === "TokenExpiredError") {
+          Auth();
         }
-        else if(response.data.error.name === "TokenExpiredError"){
-          Auth()
-      }
       });
   };
   const submitLike = (id: number) => {
@@ -112,10 +112,9 @@ const HomePage: React.FC = () => {
         getFeeds();
       } else if (response.data.removed) {
         getFeeds();
+      } else if (response.data.error.name === "TokenExpiredError") {
+        Auth();
       }
-      else if(response.data.error.name === "TokenExpiredError"){
-        Auth()
-    }
     });
   };
 
@@ -126,10 +125,9 @@ const HomePage: React.FC = () => {
         getFeeds();
       } else if (response.data.removed) {
         getFeeds();
+      } else if (response.data.error.name === "TokenExpiredError") {
+        Auth();
       }
-      else if(response.data.error.name === "TokenExpiredError"){
-        Auth()
-    }
     });
   };
   return (
@@ -201,7 +199,7 @@ const HomePage: React.FC = () => {
                       <AiOutlineHeart onClick={() => submitLike(post.id)} />
                     )}
                     {checkSavedPosts.length &&
-                      checkSavedPosts[0].user_id === state.id ? (
+                    checkSavedPosts[0].user_id === state.id ? (
                       <AiFillSave onClick={() => savePost(post.id)} />
                     ) : (
                       <AiOutlineSave onClick={() => savePost(post.id)} />

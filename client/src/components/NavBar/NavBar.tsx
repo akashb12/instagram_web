@@ -3,7 +3,7 @@ import { SearchedUsers } from "../../Context/Context";
 import "./NavBar.css";
 import { Link, useLocation } from "react-router-dom";
 import { MdHome } from "react-icons/md";
-import { BiUserCircle, BiSave, BiLogOut } from "react-icons/bi";
+import { BiUserCircle, BiSave, BiLogOut,BiAddToQueue } from "react-icons/bi";
 import { Dropdown } from 'react-bootstrap'
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -93,6 +93,8 @@ const NavBar = () => {
                         <Dropdown.Menu style={{ top: '10px' }}>
                             <Dropdown.Item ><Link to={"/profile/" + Id}><BiUserCircle style={{ fontSize: "1.2rem" }} /> &nbsp; profile</Link></Dropdown.Item>
                             <Dropdown.Item ><Link to={"/savedPosts"}><BiSave style={{ fontSize: "1.2rem" }} /> &nbsp; Saved</Link></Dropdown.Item>
+                            <Dropdown.Item ><Link to={"/addPost"}><BiAddToQueue style={{ fontSize: "1.2rem" }} /> &nbsp; Add Post</Link></Dropdown.Item>
+                            <hr className="mt-0 mb-0" />
                             <Dropdown.Item onClick={() => Auth()} ><BiLogOut style={{ fontSize: "1.2rem" }} /> &nbsp; Logout</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>

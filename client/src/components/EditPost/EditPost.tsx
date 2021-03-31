@@ -5,7 +5,7 @@ import axios from "axios";
 import { RootStore } from "../..";
 import { useSelector } from "react-redux";
 import NavBar from "../NavBar/NavBar";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 interface Image {
   profileImg: any;
@@ -20,65 +20,85 @@ interface submitData {
   userId: number;
 }
 
-const AddPosts = () => {
+interface Posts {
+  id: number;
+  attachment_url: string;
+  caption: string;
+  user: PostsUser;
+  tagged_users: string[];
+  archive: boolean;
+  comments_enabled: boolean;
+}
+interface PostsUser {
+  id: number;
+  username: string;
+  profile_image: string;
+}
+
+const EditPost = () => {
   const token: string = window.sessionStorage.getItem("token")!;
   const state = useSelector((state: RootStore) => state.mainReducer.auth!);
-  const [ProfileImg, setProfileImg] = useState<Image>({ profileImg: "" });
-  const [DataToSubmit, setDataToSubmit] = useState<submitData>({
-    userId: 0,
-    caption: "",
-    tagged_users: [],
-    attachment_url: "",
-    comments_enabled: true,
-    archive: false,
-  });
   const [SearchedUser, setSearchedUser] = useState<string>("");
   const [Check, setCheck] = useState(false);
   const [Users, setUsers] = useState<UserProfile[]>([]);
-  const [TaggedUsers, setTaggedUsers] = useState<string[]>([]);
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
-
+  const id = useParams<Params>().id;
+  const [PostDetails, setPostDetails] = useState<Posts>({
+    id: 0,
+    attachment_url: "",
+    caption: "",
+    comments_enabled: true,
+    user: {
+      id: 0,
+      username: "",
+      profile_image: "",
+    },
+    tagged_users: [],
+    archive: false,
+  });
   const Auth = () => {
     window.sessionStorage.removeItem("token");
     window.location.replace("/login");
   };
 
-  const handleImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fileList = e.target.files && e.target.files[0];
-    if (fileList) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.readyState === 2) {
-          if (reader.result) {
-            setProfileImg({ profileImg: reader.result });
-          }
+  useEffect(() => {
+    getFeeds();
+  }, [state]);
+
+  const getFeeds = () => {
+    axios
+      .post(`/api/post/getEditablePost/${id}`, null, config)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.status) {
+          setPostDetails({
+            id: response.data.post.id,
+            attachment_url: response.data.post.attachment_url,
+            comments_enabled: response.data.post.comments_enabled,
+            archive: response.data.post.archive,
+            caption: response.data.post.caption,
+            user: {
+              id: response.data.post.user.id,
+              username: response.data.post.user.username,
+              profile_image: response.data.post.user.profile_image,
+            },
+            tagged_users: response.data.post.tagged_users,
+          });
+        } else if (response.data.error.name === "TokenExpiredError") {
+          Auth();
         }
-      };
-      reader.readAsDataURL(fileList);
-      const formData = new FormData();
-      formData.append("file", fileList);
-      axios
-        .post("/api/post/addPostImages", formData, config)
-        .then((response) => {
-          if (response.data.status) {
-            setDataToSubmit({
-              ...DataToSubmit,
-              attachment_url: "http://localhost:5000/" + response.data.image,
-            });
-          } else {
-            Auth();
-          }
-        });
-    }
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDataToSubmit({
-      ...DataToSubmit,
+    setPostDetails({
+      ...PostDetails,
       [e.target.name]: e.target.value,
-      userId: state.id || 0,
     });
   };
 
@@ -105,37 +125,29 @@ const AddPosts = () => {
     }
   }, [SearchedUser]);
 
-  //   useEffect(() => {
-  //     console.log("users", TaggedUsers);
-  //   }, [TaggedUsers]);
-
   const addTags = (name: string) => {
-   const alreadyExist = DataToSubmit.tagged_users.includes(name)
-   if(alreadyExist){
-    setDataToSubmit({
-      ...DataToSubmit
+    setPostDetails({
+      ...PostDetails,
+      tagged_users: [...PostDetails.tagged_users, name],
     });
-   }else{
-    setDataToSubmit({
-      ...DataToSubmit,
-      tagged_users: [...DataToSubmit.tagged_users, name],
-    });
-   }
   };
   const removeTag = (index: number) => {
-    const newTags = [...DataToSubmit.tagged_users];
+    const newTags = [...PostDetails.tagged_users];
     newTags.splice(index, 1);
-    setDataToSubmit({ ...DataToSubmit, tagged_users: newTags });
+    setPostDetails({ ...PostDetails, tagged_users: newTags });
   };
 
   const submitForm = () => {
-    axios.post("/api/post/addPost", DataToSubmit, config).then((response) => {
-      if (response.data.status) {
-        console.log("data", response.data);
-      } else {
-        Auth();
-      }
-    });
+    console.log("data", PostDetails);
+    axios
+      .post("/api/post/editPost/" + PostDetails.id, PostDetails, config)
+      .then((response) => {
+        if (response.data.status) {
+          console.log("data", response.data);
+        } else {
+          Auth();
+        }
+      });
   };
   return (
     <>
@@ -143,23 +155,12 @@ const AddPosts = () => {
       <div className="profile_image">
         <img
           style={{ width: "35vw", height: "40vh" }}
-          src={ProfileImg.profileImg ? ProfileImg.profileImg : "/insta.png"}
+          src={PostDetails.attachment_url}
           alt="noimage"
         />
       </div>
       <div className="update_user">
         <Form>
-          <Form.Label>Add Post Images</Form.Label>
-          <Form.File
-            type="file"
-            accept="image/*"
-            name="file"
-            id="custom-file-translate-scss"
-            label="upload image"
-            lang="en"
-            custom
-            onChange={handleImgChange}
-          />
           <Form.Group>
             <Form.Label>Caption</Form.Label>
             <Form.Control
@@ -167,7 +168,7 @@ const AddPosts = () => {
               name="caption"
               placeholder="caption"
               onChange={handleChange}
-              value={DataToSubmit.caption}
+              value={PostDetails.caption}
             />
           </Form.Group>
           <Form.Group>
@@ -181,7 +182,7 @@ const AddPosts = () => {
             />
           </Form.Group>
           <div className="tags">
-            {DataToSubmit.tagged_users.map((user: string, index: number) => {
+            {PostDetails.tagged_users.map((user: string, index: number) => {
               return (
                 <span>
                   <span>{user}</span>
@@ -221,26 +222,36 @@ const AddPosts = () => {
               </div>
             </div>
           </div>
-
-          {/*
           <Form.Check
-            checked={DataToSubmit.isPrivate}
+            checked={PostDetails.archive}
             onChange={() =>
-              setDataToSubmit({
-                ...DataToSubmit,
-                isPrivate: !DataToSubmit.isPrivate,
+              setPostDetails({
+                ...PostDetails,
+                archive: !PostDetails.archive,
               })
             }
             type="switch"
-            id="custom-switch"
-            label={
-              DataToSubmit.isPrivate
-                ? "remove private account"
-                : "make private account"
+            id="archive"
+            label={PostDetails.archive ? "remove from archive" : "archive post"}
+          />
+          <Form.Check
+            checked={PostDetails.comments_enabled}
+            onChange={() =>
+              setPostDetails({
+                ...PostDetails,
+                comments_enabled: !PostDetails.comments_enabled,
+              })
             }
-          /> */}
+            type="switch"
+            id="comments_enabled"
+            label={
+              PostDetails.comments_enabled
+                ? "disable comments"
+                : "enable comments"
+            }
+          />
           <Button variant="primary" onClick={submitForm}>
-            Submit
+            Update Post
           </Button>
         </Form>
       </div>
@@ -248,4 +259,4 @@ const AddPosts = () => {
   );
 };
 
-export default AddPosts;
+export default EditPost;

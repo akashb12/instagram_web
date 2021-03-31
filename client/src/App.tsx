@@ -13,6 +13,7 @@ import UpdateUser from "./components/UpdateUser/UpdateUser";
 import SavedPosts from "./components/SavedPosts/SavedPosts";
 import DetailProductPage from "./components/DetailProductPage/DetailProductPage";
 import AddPosts from "./components/AddPosts/AddPosts";
+import EditPost from "./components/EditPost/EditPost";
 
 const App: React.FC = () => {
   // {
@@ -66,6 +67,11 @@ const App: React.FC = () => {
                   exact
                   path="/addPost/"
                   component={Auth(AddPosts, true)}
+                />
+                 <Route
+                  exact
+                  path="/editPost/:id"
+                  component={Auth(EditPost, true)}
                 />
               </div>
             </Switch>

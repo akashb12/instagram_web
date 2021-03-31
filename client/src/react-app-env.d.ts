@@ -56,12 +56,15 @@ interface UserProfile {
 
 // user details
 interface UserDetails{
+  followId:number,
   profileName:string,
   profileImage:string,
   bio:"",
   followers:number,
   following:number,
   postsCount:number,
+  message:string,
+  requested:boolean
 }
 interface UserPosts{
   id:number,

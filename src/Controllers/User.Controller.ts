@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../DataBase/Models/User";
 import { Follower } from "../DataBase/Models/Follower";
+import { Requests } from "../DataBase/Models/Request";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import multer from "multer";
@@ -217,14 +218,21 @@ module.exports.getProfile = async function (req: any, res: Response) {
         User.relatedQuery("followers").count().as("followerCount"),
         User.relatedQuery("following").count().as("followingCount"),
       ]);
-    const getProfileDetails = await Follower.query()
-      .select("*")
-      .where("user_id", "=", req.params.targetId)
-      .andWhere("follower_id", "=", req.params.myId);
+    const getProfileDetails = await Follower.query().findOne({
+      user_id: req.params.targetId,
+      follower_id:req.params.myId
+    })
+      // .select("*")
+      // .where("user_id", "=", req.params.targetId)
+      // .andWhere("follower_id", "=", req.params.myId);
+
+      const requested = await Requests.query()
+      .findOne({user_id:req.params.targetId, request_id:req.params.myId})
 
     if (req.params.targetId === req.params.myId) {
       return res.status(200).send({
         status: true,
+        id:user.id,
         name: user.username,
         profileImage: user.profile_image,
         bio: user.bio,
@@ -235,9 +243,11 @@ module.exports.getProfile = async function (req: any, res: Response) {
       });
     } else {
       if (user.is_private === true) {
-        if (getProfileDetails.length) {
+        if (getProfileDetails) {
           return res.status(200).send({
             status: true,
+            id:user.id,
+            followId:getProfileDetails.id,
             name: user.username,
             profileImage: user.profile_image,
             bio: user.bio,
@@ -250,6 +260,7 @@ module.exports.getProfile = async function (req: any, res: Response) {
         } else {
           return res.status(200).send({
             status: true,
+            id:user.id,
             name: user.username,
             bio: user.bio,
             profileImage: user.profile_image,
@@ -257,12 +268,15 @@ module.exports.getProfile = async function (req: any, res: Response) {
             followers: user.followerCount,
             following: user.followingCount,
             message: "not following",
+            requested:requested ? true: false
           });
         }
       } else {
-        if (getProfileDetails.length) {
+        if (getProfileDetails) {
           return res.status(200).send({
             status: true,
+            id:user.id,
+            followId:getProfileDetails.id,
             name: user.username,
             profileImage: user.profile_image,
             bio: user.bio,
@@ -275,6 +289,7 @@ module.exports.getProfile = async function (req: any, res: Response) {
         } else {
           return res.status(200).send({
             status: true,
+            id:user.id,
             name: user.username,
             profileImage: user.profile_image,
             postCount: user.postCount,

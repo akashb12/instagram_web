@@ -89,9 +89,31 @@ module.exports.addPost = async function (req: Request, res: Response) {
     });
   }
 };
+
+
+// get post details to edit
+module.exports.getEditablePost = async function (req: Request, res: Response) {
+  try {
+    const post = await Post.query()
+      .findOne({ id: req.params.id })
+      .withGraphFetched("user")
+    return res.status(200).send({
+      status: true,
+      post,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      status: false,
+      error,
+    });
+  }
+};
+
+
 // edit post
 module.exports.editPost = async function (req: Request, res: Response) {
-  const { caption, tagged_users } = req.body;
+  const { caption, tagged_users,comments_enabled,archive } = req.body;
 
   try {
     const post = await Post.query().findById(req.params.id);
@@ -100,6 +122,8 @@ module.exports.editPost = async function (req: Request, res: Response) {
       .patch({
         caption: caption ? caption : post.caption,
         tagged_users: tagged_users ? tagged_users : post.tagged_users,
+        archive:archive,
+        comments_enabled:comments_enabled
       });
     return res.status(200).send({
       status: true,
@@ -148,23 +172,6 @@ module.exports.savePost = async function (req: any, res: Response) {
   }
 };
 
-// unsave
-module.exports.unSavePost = async function (req: any, res: Response) {
-  try {
-    const removeData = await SavedPosts.query().deleteById(req.params.id);
-    return res.status(200).send({
-      status: true,
-      message: "post unsaved",
-      removeData,
-    });
-  } catch (error) {
-    return res.status(400).send({
-      status: false,
-      error,
-    });
-  }
-};
-
 // get my posts
 module.exports.getFeeds = async function (req: Request, res: Response) {
   try {
@@ -181,7 +188,7 @@ module.exports.getFeeds = async function (req: Request, res: Response) {
     const posts = await Post.query()
       .select("*")
       .whereIn("user_id", ids)
-      .andWhere("archive","=", false)
+      .andWhere("archive", "=", false)
       .withGraphFetched("comments.[user]")
       .withGraphFetched("likes.[user]")
       .withGraphFetched("user")
@@ -203,14 +210,13 @@ module.exports.getFeeds = async function (req: Request, res: Response) {
 // get my posts
 module.exports.getPostDetails = async function (req: Request, res: Response) {
   try {
-
-    const post = await Post.query().findOne({id:req.params.id})
+    const post = await Post.query()
+      .findOne({ id: req.params.id })
       .withGraphFetched("comments.[user]")
       .withGraphFetched("likes.[user]")
       .withGraphFetched("user")
       .withGraphFetched("saved_posts")
-      .withGraphFetched("user")
-      .withGraphFetched("replies.[user]")
+      .withGraphFetched("replies.[user]");
     return res.status(200).send({
       status: true,
       post,

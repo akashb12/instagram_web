@@ -22,13 +22,31 @@
   right: 0;
   z-index: 3;
 }
-.delete_comment{
+.delete_comment {
   display: none;
 }
-.post_user:hover .delete_comment{
+.post_user:hover .delete_comment {
   position: relative;
   float: right;
   display: block;
+}
+.hide_button {
+  background-color: black;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+.btn-success:not(:disabled):not(.disabled).active:focus, .btn-success:not(:disabled):not(.disabled):active:focus, .show>.btn-success.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0;
+}
+.btn-primary:hover {
+  color: white;
+  background-color: black;
+}
+.btn-primary:focus {
+  color: white;
+  background-color: black;
 }
 @media screen and (min-width: 576px) {
   .post_modal .modal-dialog {

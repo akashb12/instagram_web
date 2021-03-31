@@ -1,6 +1,7 @@
 import { Model } from "objection";
 import { User } from "./User";
 export class Follower extends Model {
+  id!:number;
   user_id!: number;
   follower_id!: number;
   static get tableName() {
